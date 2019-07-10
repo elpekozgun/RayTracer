@@ -123,20 +123,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\IGeometricEntity.h" />
-    <ClCompile Include="src\Plane.cpp" />
-    <ClCompile Include="src\Ray.cpp" />
+    <ClCompile Include="src\Core\Camera.cpp" />
+    <ClCompile Include="src\Core\Parser.cpp" />
+    <ClCompile Include="src\Core\Ray.cpp" />
+    <ClCompile Include="src\Core\Vector3.cpp" />
+    <ClCompile Include="src\GeometricEntities\Mesh.cpp" />
+    <ClCompile Include="src\GeometricEntities\Plane.cpp" />
+    <ClCompile Include="src\GeometricEntities\Sphere.cpp" />
+    <ClCompile Include="src\GeometricEntities\Triangle.cpp" />
     <ClCompile Include="src\RayTracer.cpp" />
-    <ClCompile Include="src\Parser.cpp" />
-    <ClCompile Include="src\Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\Parser.h" />
-    <ClInclude Include="src\Plane.h" />
-    <ClInclude Include="src\Ray.h" />
-    <ClInclude Include="src\Vector3.h" />
+    <ClInclude Include="src\Core\Camera.h" />
+    <ClInclude Include="src\Core\Parser.h" />
+    <ClInclude Include="src\Core\Ray.h" />
+    <ClInclude Include="src\Core\Vector3.h" />
+    <ClInclude Include="src\GeometricEntities\IGeometricEntity.h" />
+    <ClInclude Include="src\GeometricEntities\Mesh.h" />
+    <ClInclude Include="src\GeometricEntities\Plane.h" />
+    <ClInclude Include="src\GeometricEntities\Sphere.h" />
+    <ClInclude Include="src\GeometricEntities\Triangle.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\input1.txt" />
+    <Text Include="res\input2.txt" />
+    <Text Include="res\input3.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

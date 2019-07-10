@@ -4,11 +4,14 @@
 class Plane : public IGeometricEntity 
 {
 public:
-	Plane();
+
+	Vector3 Normal;
+	Vector3 SurfacePointA;
+
+	Plane(Vector3 normal);
 	~Plane();
 
+	
 	virtual float Intersect(Ray ray) override;
-
-private:
 
 };

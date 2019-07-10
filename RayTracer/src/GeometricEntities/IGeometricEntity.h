@@ -1,5 +1,5 @@
 #pragma once
-#include "Ray.h"
+#include "../Core/Ray.h"
 
 class IGeometricEntity
 {
