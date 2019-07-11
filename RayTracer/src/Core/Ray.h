@@ -1,4 +1,6 @@
-#pragma once
+#ifndef RAY_H
+#define RAY_H
+
 #include "Vector3.h"
 
 class Ray
@@ -12,4 +14,6 @@ public:
 	~Ray();
 
 };
+
+#endif 
 

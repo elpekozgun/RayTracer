@@ -1,3 +1,5 @@
+#ifndef VECTOR_3_H
+#define VECTOR_3_H
 #include <cmath>
 
 class Vector3
@@ -24,3 +26,5 @@ public:
 
 	~Vector3();
 };
+
+#endif 

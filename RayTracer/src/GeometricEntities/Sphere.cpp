@@ -1,6 +1,10 @@
 #include "Sphere.h"
 #include <cmath>
 
+Sphere::Sphere()
+{
+}
+
 Sphere::Sphere(Vector3 center, float radius)
 {
 	Center = center;
@@ -22,4 +26,9 @@ float Sphere::Intersect(Ray ray)
 	float t2 = (-do_c + sqrt(powf(do_c, 2.0f) - dd * (o_c.DotProduct(o_c) - Radius * Radius))) / dd;
 
 	return t1 <= t2 ? t1 : t2;
+}
+
+eEntityType Sphere::GetType()
+{
+	return eEntityType::sphere;
 }

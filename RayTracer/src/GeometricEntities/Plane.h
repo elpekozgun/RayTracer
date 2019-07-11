@@ -1,4 +1,6 @@
-#pragma once	
+#ifndef PLANE_H
+#define PLANE_H
+
 #include "IGeometricEntity.h"
 
 class Plane : public IGeometricEntity 
@@ -15,3 +17,5 @@ public:
 	virtual float Intersect(Ray ray) override;
 
 };
+
+#endif

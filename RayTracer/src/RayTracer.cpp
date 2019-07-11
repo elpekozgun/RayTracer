@@ -1,45 +1,42 @@
 
 #include <iostream>
-#include "Core/Parser.h"
-#include "Core/Ray.h"
 #include <vector>
 #include <algorithm>
 #include <iterator>
+
+#include "Core/Parser.h"
+#include "Core/Ray.h"
+#include "GeometricEntities/IGeometricEntity.h"
 #include "GeometricEntities/Sphere.h"
 #include "GeometricEntities/Plane.h"
+#include "GeometricEntities/Mesh.h"
 
 using namespace std;
-
-struct vector2
-{
-	float x;
-	float y;
-};
-
-struct vector4
-{
-	float x;
-	float y;
-	float z;
-	float w;
-};
 
 
 int main()
 {
-	string output = Parser::Parse("res/input1.txt");
+	Parser parser;
+
+	std::vector<std::vector<std::string>>output = Parser::Parse("res/input3.txt");
 	
-	int arr[3];
+	std::vector<IEntity*> listOfEntities;
 
-	for (int asd : arr)
+	for (int i = 0; i < output.size(); i++)
 	{
-		asd = asd;
-	};
-
-	for(int dsa : arr)
-	{
-		std::cout << dsa << std::endl;
+		IEntity* entity = Parser::GenerateObject(output[i]);
+		listOfEntities.push_back(entity);
 	}
+
+
+
+
+
+
+
+
+
+
 
 
 	// Test inherited call.
@@ -58,6 +55,11 @@ int main()
 		intersectionTimes.push_back(entities[i]->Intersect(ray));
 	}
 
+	for (IEntity* entity : listOfEntities)
+	{
+		delete entity;
+	}
+	
 	delete(sphere);
 	delete(plane);
 
