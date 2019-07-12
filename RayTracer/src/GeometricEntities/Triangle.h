@@ -6,6 +6,12 @@
 class Triangle : public IGeometricEntity, IEntity
 {
 public:
+
+	Vector3 Vertices[3];
+	int ID;
+	int MaterialID;
+
+
 	Triangle();
 	~Triangle();
 

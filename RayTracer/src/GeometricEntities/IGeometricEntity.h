@@ -2,7 +2,7 @@
 #define IGEOMETRICENTITY_H
 
 #include "../Core/Ray.h"
-#include "..//Core/IEntity.h"
+#include "..//Entities/IEntity.h"
 
 class IGeometricEntity
 {

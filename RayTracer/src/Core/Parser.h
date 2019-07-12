@@ -6,12 +6,14 @@
 #include <sstream>
 #include <vector>
 
-#include "Camera.h"
 #include "Vector3.h"
-#include "IEntity.h"
+#include "..//Entities/Primitive.h"
+#include "..//Entities/IEntity.h"
+#include "..//Entities/Camera.h"
+#include "..//Entities/Material.h"
+#include "..//Entities/VertexList.h"
+#include "..//Entities/PointLight.h"
 #include "..//GeometricEntities/IGeometricEntity.h"
-#include "ValueType.h"
-#include "Material.h"
 #include "..//GeometricEntities/Mesh.h"
 #include "..//GeometricEntities/Sphere.h"
 #include "..//GeometricEntities/Triangle.h"
@@ -28,23 +30,26 @@ constexpr auto SPHERE				= "#Sphere";
 constexpr auto TRIANGLE				= "#Triangle";
 constexpr auto MESH					= "#Mesh";
 
+
 class Parser
 {
 public:
 	Parser();
 	~Parser();
 
-	static IEntity* GenerateObject(std::vector<std::string> list);
 
 	static std::vector<std::vector<std::string>> Parse(std::string path);
+	static IEntity* GenerateEntity(std::vector<std::string> list);
+	static IGeometricEntity* GenerateGeometricEntity(std::vector<std::string> list, VertexList vertices);
 
-	static Vector3 GetVector3(std::vector<std::string> list);
-	static Vector3 GetInt(std::vector<std::string> list);
 
 private:
-	static Vector2 ParseLineToVector2(std::string line);
-	static Vector3 ParseLineToVector3(std::string line);
-	static Vector4 ParseLineToVector4(std::string line);
+	static Vector2 ToVector2(std::string line);
+	static Vector4 ToVector4(std::string line);
+	static Vector3 ToVector3(std::string line);
+	static float ToFloat(std::string line);
+	static int ToInt(std::string line);
+	static float SciToFloat(std::string line);
 
 };
 

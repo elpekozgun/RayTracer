@@ -123,12 +123,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Core\Camera.cpp" />
-    <ClCompile Include="src\Core\Material.cpp" />
-    <ClCompile Include="src\Core\ValueType.cpp" />
     <ClCompile Include="src\Core\Parser.cpp" />
     <ClCompile Include="src\Core\Ray.cpp" />
     <ClCompile Include="src\Core\Vector3.cpp" />
+    <ClCompile Include="src\Entities\Camera.cpp" />
+    <ClCompile Include="src\Entities\Material.cpp" />
+    <ClCompile Include="src\Entities\PointLight.cpp" />
+    <ClCompile Include="src\Entities\Primitive.cpp" />
+    <ClCompile Include="src\Entities\VertexList.cpp" />
     <ClCompile Include="src\GeometricEntities\Mesh.cpp" />
     <ClCompile Include="src\GeometricEntities\Plane.cpp" />
     <ClCompile Include="src\GeometricEntities\Sphere.cpp" />
@@ -136,13 +138,15 @@
     <ClCompile Include="src\RayTracer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\Camera.h" />
-    <ClInclude Include="src\Core\Material.h" />
-    <ClInclude Include="src\Core\ValueType.h" />
-    <ClInclude Include="src\Core\IEntity.h" />
     <ClInclude Include="src\Core\Parser.h" />
     <ClInclude Include="src\Core\Ray.h" />
     <ClInclude Include="src\Core\Vector3.h" />
+    <ClInclude Include="src\Entities\Camera.h" />
+    <ClInclude Include="src\Entities\IEntity.h" />
+    <ClInclude Include="src\Entities\Material.h" />
+    <ClInclude Include="src\Entities\PointLight.h" />
+    <ClInclude Include="src\Entities\Primitive.h" />
+    <ClInclude Include="src\Entities\VertexList.h" />
     <ClInclude Include="src\GeometricEntities\IGeometricEntity.h" />
     <ClInclude Include="src\GeometricEntities\Mesh.h" />
     <ClInclude Include="src\GeometricEntities\Plane.h" />
@@ -155,6 +159,5 @@
     <Text Include="res\input3.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
 </Project>

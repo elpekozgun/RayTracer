@@ -9,7 +9,6 @@ public:
 
 	int ID;
 	int MaterialID;
-	int VertexID;
 	Vector3 Center;
 	float Radius;
 	

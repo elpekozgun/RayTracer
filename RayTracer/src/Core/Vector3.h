@@ -2,6 +2,7 @@
 #define VECTOR_3_H
 #include <cmath>
 
+
 class Vector3
 {
 public:

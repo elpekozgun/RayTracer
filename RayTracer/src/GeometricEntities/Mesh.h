@@ -3,13 +3,17 @@
 
 #include <vector>
 #include "IGeometricEntity.h"
+#include "Triangle.h"
 
 class Mesh : public IGeometricEntity , IEntity
 {
-	std::vector<Vector3> Vertices;
-
-
 public:
+
+	int ID;
+	int MaterialID;
+	std::vector<Triangle> Triangles;
+
+
 	Mesh();
 	Mesh(int id);
 	~Mesh();

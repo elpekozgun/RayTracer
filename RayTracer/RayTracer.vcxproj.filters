@@ -30,9 +30,6 @@
     <ClCompile Include="src\GeometricEntities\Triangle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Core\Parser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -42,10 +39,19 @@
     <ClCompile Include="src\Core\Vector3.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\ValueType.cpp">
+    <ClCompile Include="src\Entities\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Core\Material.cpp">
+    <ClCompile Include="src\Entities\Material.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entities\VertexList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entities\PointLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Entities\Primitive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,9 +68,6 @@
     <ClInclude Include="src\GeometricEntities\Triangle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Core\Parser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -77,13 +80,22 @@
     <ClInclude Include="src\GeometricEntities\IGeometricEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\IEntity.h">
+    <ClInclude Include="src\Entities\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\ValueType.h">
+    <ClInclude Include="src\Entities\IEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Core\Material.h">
+    <ClInclude Include="src\Entities\Material.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entities\VertexList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entities\PointLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Entities\Primitive.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

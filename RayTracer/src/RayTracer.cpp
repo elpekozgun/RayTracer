@@ -10,25 +10,41 @@
 #include "GeometricEntities/Sphere.h"
 #include "GeometricEntities/Plane.h"
 #include "GeometricEntities/Mesh.h"
+#include "Entities/IEntity.h"
 
 using namespace std;
 
 
 int main()
 {
-	Parser parser;
-
 	std::vector<std::vector<std::string>>output = Parser::Parse("res/input3.txt");
 	
-	std::vector<IEntity*> listOfEntities;
-
-	for (int i = 0; i < output.size(); i++)
+	std::vector<IEntity*> Entities;
+	std::vector<IGeometricEntity*> GeometricEntities;
+	VertexList vertexList;
+	
+	for( auto& list : output )
 	{
-		IEntity* entity = Parser::GenerateObject(output[i]);
-		listOfEntities.push_back(entity);
+		auto entity = Parser::GenerateEntity(list);
+		if( entity )
+		{
+			Entities.push_back(entity);
+			if( entity->GetType() == eEntityType::vertexlist )
+			{
+				vertexList = *static_cast<VertexList*>(entity);
+			}
+		}
 	}
 
 
+	for( auto& list : output )
+	{
+		auto entity = Parser::GenerateGeometricEntity(list, vertexList);
+		if( entity )
+		{
+			GeometricEntities.push_back(entity);
+		}
+	}
 
 
 
@@ -55,7 +71,12 @@ int main()
 		intersectionTimes.push_back(entities[i]->Intersect(ray));
 	}
 
-	for (IEntity* entity : listOfEntities)
+	for (IEntity* entity : Entities)
+	{
+		delete entity;
+	}
+
+	for( IGeometricEntity* entity : GeometricEntities )
 	{
 		delete entity;
 	}

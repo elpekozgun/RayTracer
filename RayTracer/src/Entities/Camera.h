@@ -1,8 +1,8 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include "Vector3.h"
-#include "ValueType.h"
+#include "../Core/Vector3.h"
+#include "..//Entities/IEntity.h"
 
 struct Vector2
 {

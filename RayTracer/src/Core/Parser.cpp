@@ -1,4 +1,6 @@
 #include "Parser.h"
+#include <iterator>
+#include <iostream>
 
 Parser::Parser()
 {
@@ -8,93 +10,131 @@ Parser::~Parser()
 {
 }
 
-IEntity* Parser::GenerateObject(std::vector<std::string> list)
+IEntity* Parser::GenerateEntity(std::vector<std::string> list)
 {
-	std::string header = list[0];
+	std::string heading = list[0];
 
-	if (header == BACKGROUNDCOLOR)
+	if( heading == BACKGROUNDCOLOR )
 	{
-		BackgroundColor* backgroundcolor = new	BackgroundColor();
-		backgroundcolor->Color = ParseLineToVector3(list[1]);
-		return backgroundcolor;
+		BackgroundColor* backGroundColor = new BackgroundColor();
+		backGroundColor->BackgroundColorValue = ToVector3(list[1]);
+		return backGroundColor;
 	}
-	else if (header == MAXRECURSIONDEPTH)
+	else if( heading == MAXRECURSIONDEPTH )
 	{
-		MaxRecursionDepth* recursionDepth = new MaxRecursionDepth();
-		recursionDepth->RecursionDepth = (float)atof(list[1].c_str());
-		return recursionDepth;
+		MaxRecursionDepth* maxRecursionDepth = new MaxRecursionDepth();
+		maxRecursionDepth->MaxRecursionDepthValue = ToInt(list[1]);
+		return maxRecursionDepth;
 	}
-	else if (header == SHADOWRAYEPSILON)
+	else if( heading == SHADOWRAYEPSILON )
 	{
-		ShadowRayEpsilon* shadowRayEpsilon = new ShadowRayEpsilon();
-		shadowRayEpsilon->ShadowRayEpsilon= (float)atof(list[1].c_str());
-		return shadowRayEpsilon;
+		ShadowRayEpsilon* shadowRayepsilon = new ShadowRayEpsilon();
+		shadowRayepsilon->ShadowRayEpsilonValue = SciToFloat(list[1]);
+		return shadowRayepsilon;
 	}
-	else if (header == CAMERA)
+	else if( heading == AMBIENTLIGHT )
+	{
+		AmbientLight* ambientLight = new AmbientLight();
+		ambientLight->AmbientLightValue = ToVector3(list[1]);
+		return ambientLight;
+	}
+	else if (heading == CAMERA)
 	{
 		Camera* camera = new Camera();
-		camera->Position = ParseLineToVector3(list[1]);
-		camera->Gaze = ParseLineToVector3(list[2]);
-		camera->Up = ParseLineToVector3(list[3]);
-		camera->NearPlane = ParseLineToVector4(list[4]);
-		camera->NearDistance = (float)atof(list[5].c_str());
-		camera->ScreenResolution = ParseLineToVector2(list[6]);
+		camera->Position = ToVector3(list[1]);
+		camera->Gaze = ToVector3(list[2]);
+		camera->Up = ToVector3(list[3]);
+		camera->NearPlane = ToVector4(list[4]);
+		camera->NearDistance = ToFloat(list[5]);
+		camera->ScreenResolution = ToVector2(list[6]);
 
 		return camera;
 	}
-	else if (header == MATERIAL)
+	else if (heading == MATERIAL)
 	{
 		Material* material = new Material();
-		material->ID = atoi(list[1].c_str());
-		material->Ambient = ParseLineToVector3(list[2]);
-		material->Diffuse = ParseLineToVector3(list[3]);
-		material->Specular = ParseLineToVector3(list[4]);
-		material->PhongExponent = (float)atof(list[5].c_str());
-		material->Specular = ParseLineToVector3(list[6]);
+		material->ID = ToInt(list[1]);
+		material->Ambient = ToVector3(list[2]);
+		material->Diffuse = ToVector3(list[3]);
+		material->Specular = ToVector3(list[4]);
+		material->PhongExponent = ToFloat(list[5]);
+		material->Specular = ToVector3(list[6]);
 
 		return material;
 	}
-	else if (header == AMBIENTLIGHT)
-	{
-		AmbientLight* ambientLight = new AmbientLight();
-		ambientLight->AmbientColor = ParseLineToVector3(list[1]);
-		return ambientLight;
-	}
-	else if (header == POINTLIGHT)
+	else if (heading == POINTLIGHT)
 	{
 		PointLight* pointlight = new PointLight();
-		pointlight->ID = atoi(list[1].c_str());
-		pointlight->position = ParseLineToVector3(list[2]);
-		pointlight->Intensity = ParseLineToVector3(list[3]);
+		pointlight->ID = ToInt(list[1]);
+		pointlight->Position = ToVector3(list[2]);
+		pointlight->Intensity = ToVector3(list[3]);
+
 		return pointlight;
 	}
-	else if (header == VERTEXLIST)
+	else if (heading == VERTEXLIST)
 	{
 		VertexList* vertexList = new VertexList();
 		for (unsigned int i = 1; i < list.size(); i++)
 		{
-			vertexList->vertexList.push_back(ParseLineToVector3(list[i]));
+			// vertex index starting from 1.
+			std::pair<int,Vector3> pair(i, ToVector3(list[i]));
+			vertexList->vertexList.insert(pair);
 		}
 		return vertexList;
-	}
-	else if (header == SPHERE)
-	{
-	}
-	else if (header == TRIANGLE)
-	{
-
-	}
-	else if (header == MESH)
-	{
-
 	}
 
 
 	return nullptr;
 }
 
+IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list, VertexList vertexList)
+{
+	std::string heading = list[0];
 
+	if( heading == TRIANGLE )
+	{
+		Triangle* triangle = new Triangle();
+		triangle->ID = ToInt(list[1]);
+		triangle->MaterialID = ToInt(list[2]);
+		Vector3 vertices  = ToVector3(list[3]);
+		triangle->Vertices[0] = vertexList.vertexList.at((int)vertices.X);
+		triangle->Vertices[1] = vertexList.vertexList.at((int)vertices.Y);
+		triangle->Vertices[2] = vertexList.vertexList.at((int)vertices.Z);
 
+		return triangle;
+	}
+	else if( heading == SPHERE )
+	{
+		Sphere* sphere = new Sphere();
+		sphere->ID = ToInt(list[1]);
+		sphere->MaterialID = ToInt(list[2]);
+		sphere->Center = vertexList.vertexList.at(ToInt(list[3]));
+		sphere->Radius = ToFloat(list[4]);
+
+		return sphere;
+	}
+	else if( heading == MESH )
+	{
+		Mesh* mesh = new Mesh();
+		mesh->ID = ToInt(list[1]);
+		mesh->MaterialID = ToInt(list[2]);
+		for( unsigned int i = 3; i < list.size(); i++ )
+		{
+			Triangle triangle;
+			Vector3 vertices = ToVector3(list[i]);
+			triangle.Vertices[0] = vertexList.vertexList.at((int)vertices.X);
+			triangle.Vertices[1] = vertexList.vertexList.at((int)vertices.Y);
+			triangle.Vertices[2] = vertexList.vertexList.at((int)vertices.Z);
+			mesh->Triangles.push_back(triangle);
+
+		}
+
+		return mesh;
+
+	}
+
+	return nullptr;
+}
 
 std::vector<std::vector<std::string>> Parser::Parse(std::string path)
 {
@@ -123,86 +163,80 @@ std::vector<std::vector<std::string>> Parser::Parse(std::string path)
 	return returnList;
 }
 
-Vector2 Parser::ParseLineToVector2(std::string line)
+Vector4 Parser::ToVector4(std::string line)
 {
-	std::string delimiter = " ";
-	unsigned int pos = 0;
+	std::istringstream iss(line);
 	std::string token;
+	float values[4] = { 0 };
+	int i = 0;
 
-	float vecVals[2] = { 0 };
-	unsigned int i = 0;
-	while ((pos = line.find(delimiter)) != std::string::npos)
+	while( std::getline(iss, token, ' ') )
 	{
-		token = line.substr(0, pos);
-		line.erase(0, pos + delimiter.length());
-		float f = (float)std::atof(line.c_str());
-
-		if (token != "")
+		if( token.empty() != true )
 		{
-			vecVals[i] = f;
-			i++;
+			values[i++] = (float )atof(token.c_str());
 		}
 	}
-	Vector2 retVal;
-	retVal.x = vecVals[0];
-	retVal.y = vecVals[1];
 
-	return retVal;
+	return Vector4 { values[0], values[1], values[2], values[3] };
 }
 
-Vector3 Parser::ParseLineToVector3(std::string line)
+Vector2 Parser::ToVector2(std::string line)
 {
-	std::string delimiter = " ";
-	unsigned int pos = 0;
+	std::istringstream iss(line);
 	std::string token;
+	float values[3] = { 0 };
+	int i = 0;
 
-	float vecVals[3] = { 0 };
-	unsigned int i = 0;
-	while ((pos = line.find(delimiter)) != std::string::npos)
+	while( std::getline(iss, token, ' ') )
 	{
-		token = line.substr(0, pos);
-		line.erase(0, pos + delimiter.length());
-
-		float f = (float)std::atof(token.c_str());
-		if (token != "")
+		if( token.empty() != true )
 		{
-			vecVals[i] = f;
-			i++;
+			values[i++] = (float)atof(token.c_str());
 		}
 	}
-	vecVals[2] = (float)std::atof(line.c_str());
 
-	return Vector3(vecVals[0], vecVals[1], vecVals[2]);
+	return Vector2 {values[0], values[1]};
 }
 
-Vector4 Parser::ParseLineToVector4(std::string line)
+Vector3 Parser::ToVector3(std::string line)
 {
-	std::string delimiter = " ";
-	unsigned int pos = 0;
+	std::istringstream iss(line);
 	std::string token;
+	float values[3] = { 0 };
+	int i = 0;
 
-	float vecVals[4] = { 0 };
-	unsigned int i = 0;
-	while ((pos = line.find(delimiter)) != std::string::npos)
+	while( std::getline(iss,token,' '))
 	{
-		token = line.substr(0, pos);
-		line.erase(0, pos + delimiter.length());
-		float f = (float)std::atof(line.c_str());
-		vecVals[i] = f;
-
-		if (token != "")
+		if( token.empty() != true )
 		{
-			vecVals[i] = f;
-			i++;
+			values[i++] = (float)atof(token.c_str());
 		}
 	}
-	vecVals[3] = (float)std::atof(line.c_str());
 
-	Vector4 retVal;
-	retVal.x = vecVals[0];
-	retVal.y = vecVals[1];
-	retVal.z = vecVals[2];
-	retVal.w = vecVals[3];
+	return Vector3(values[0], values[1], values[2]);
 
-	return retVal;
+}
+
+float Parser::ToFloat(std::string line)
+{
+	return (float)atof(line.c_str());
+}
+
+int Parser::ToInt(std::string line)
+{
+	return (int)atoi(line.c_str());
+}
+
+float Parser::SciToFloat(std::string line)
+{
+	std::stringstream ss(line);
+	float f = 0.0f;
+	ss >> f;
+	if( ss.fail() )
+	{
+		return 0;
+	} 
+	return(f);
+
 }

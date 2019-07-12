@@ -2,7 +2,7 @@
 #define MATERIAL_H
 
 #include "IEntity.h"
-#include "Vector3.h"
+#include "..//Core/Vector3.h"
 
 class Material : public IEntity
 {
@@ -16,7 +16,6 @@ public:
 
 	Material();
 	
-
 
 	// Inherited via IEntity
 	virtual eEntityType GetType() override;
