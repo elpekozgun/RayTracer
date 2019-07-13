@@ -33,6 +33,7 @@ public:
 
 
 	Camera();
+	Camera(Vector3 position, Vector3 gaze, Vector3 up, Vector4 nearPlane, float nearDistance, Vector2 screenResolution);
 	~Camera();
 
 private:

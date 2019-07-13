@@ -14,14 +14,30 @@
 
 using namespace std;
 
+template <typename From, typename To>
+struct dynamic_caster
+{
+	To* operator()(From* p)
+	{
+		return dynamic_cast<To*>(p);
+	}
+};
+
 
 int main()
 {
-	std::vector<std::vector<std::string>>output = Parser::Parse("res/input3.txt");
+	vector<vector<string>>output = Parser::Parse("res/input3.txt");
 	
-	std::vector<IEntity*> Entities;
-	std::vector<IGeometricEntity*> GeometricEntities;
+	vector<IEntity*> Entities;
+	vector<IGeometricEntity*> GeometricEntities;
+
+	// Entities
+	BackgroundColor backgroundColor;
+	AmbientLight ambientLight;
+	MaxRecursionDepth maxRecursionDepth;
+	ShadowRayEpsilon shadowRayEpsilon;
 	VertexList vertexList;
+	Camera camera;
 	
 	for( auto& list : output )
 	{
@@ -36,53 +52,94 @@ int main()
 		}
 	}
 
+	//similar to c# linq.where(x = > x.eEntityType == pointlight)
+	vector<IEntity*> pointLights;
+	std::copy_if
+	(
+		Entities.begin(), 
+		Entities.end(), 
+		std::back_inserter(pointLights),
+		[] (IEntity* x)-> bool { return x->GetType() == eEntityType::pointlight; } // Lambda function C++11. 
+	);
+	
+	//Camera;
+	camera = *dynamic_cast<Camera*>(*std::find_if
+	(
+		Entities.begin(),
+		Entities.end(),
+		[](IEntity* x)->bool {return x->GetType() == eEntityType::camera; }
+	)._Ptr);
 
-	for( auto& list : output )
+
+	// Materials
+	vector<IEntity*> materials;
+	std::copy_if
+	(
+		Entities.begin(),
+		Entities.end(),
+		std::back_inserter(materials),
+		[](IEntity* x)-> bool { return x->GetType() == eEntityType::material; } // Lambda function C++11. 
+	);
+	
+
+	// Primitives
+	for(auto& entity : Entities)
+	{
+		if(entity->GetType() == eEntityType::backgroundColor)
+		{
+			backgroundColor = *(dynamic_cast<BackgroundColor*>(entity));
+		}
+		else if(entity->GetType() == eEntityType::ambientLight)
+		{
+			ambientLight = *(dynamic_cast<AmbientLight*>(entity));
+		}
+		else if(entity->GetType() == eEntityType::maxRecursionDepth)
+		{
+			maxRecursionDepth = *(dynamic_cast<MaxRecursionDepth*>(entity));
+		}
+		else if(entity->GetType() == eEntityType::shadowRayEpsilon)
+		{
+			shadowRayEpsilon = *(dynamic_cast<ShadowRayEpsilon*>(entity));
+		}
+	}
+	
+
+
+
+	
+
+	for(auto& list : output)
 	{
 		auto entity = Parser::GenerateGeometricEntity(list, vertexList);
-		if( entity )
+		if(entity)
 		{
 			GeometricEntities.push_back(entity);
 		}
 	}
 
 
+	
 
-
-
-
-
-
-
-
-	// Test inherited call.
-	std::vector<IGeometricEntity*> entities;
-	std::vector<float> intersectionTimes;
-
+	
+	
 	Ray ray(Vector3(0, 0, 0), Vector3(0, 1, 0));
-	Sphere* sphere = new Sphere(Vector3(0, 5, 0), 3);
-	Plane* plane = new Plane(Vector3(0 , 0.5, 0.5));
-
-	entities.push_back(sphere);
-	entities.push_back(plane);
-
-	for (unsigned int i = 0; i < entities.size(); i++)
+	for( auto& entity : GeometricEntities )
 	{
-		intersectionTimes.push_back(entities[i]->Intersect(ray));
+		auto t = entity->Intersect(ray);
 	}
+
+
+
+
 
 	for (IEntity* entity : Entities)
 	{
 		delete entity;
 	}
-
 	for( IGeometricEntity* entity : GeometricEntities )
 	{
 		delete entity;
 	}
 	
-	delete(sphere);
-	delete(plane);
-
 	return 0;
 };

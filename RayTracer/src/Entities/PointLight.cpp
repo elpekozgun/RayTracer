@@ -13,5 +13,5 @@ PointLight::~PointLight()
 
 eEntityType PointLight::GetType()
 {
-	return eEntityType();
+	return eEntityType::pointlight;
 }
