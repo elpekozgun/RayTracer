@@ -12,10 +12,10 @@ struct Vector2
 
 struct Vector4
 {
-	float x;
-	float y;
-	float z;
-	float w;
+	float l;
+	float r;
+	float b;
+	float t;
 };
 
 
@@ -30,6 +30,7 @@ public:
 	float NearDistance;
 	Vector2 ScreenResolution;
 
+	Vector3 GetScreenPixel(int i, int j);
 
 
 	Camera();

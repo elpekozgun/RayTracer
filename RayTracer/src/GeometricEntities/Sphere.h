@@ -13,7 +13,7 @@ public:
 	float Radius;
 	
 	Sphere();
-	Sphere(Vector3 center, float radius);
+	Sphere(int id, int materialId, Vector3 center, float radius);
 	~Sphere();
 
 	virtual float Intersect(Ray ray) override;

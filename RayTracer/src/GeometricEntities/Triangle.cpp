@@ -10,6 +10,15 @@ Triangle::Triangle()
 	MaterialID = -1;
 }
 
+Triangle::Triangle(int id, int materialId, Vector3 vertices[3])
+{
+	ID= id;
+	MaterialID = materialId;
+	Vertices[0] = vertices[0];
+	Vertices[1] = vertices[1];
+	Vertices[2] = vertices[2];
+}
+
 Triangle
 ::~Triangle()
 {

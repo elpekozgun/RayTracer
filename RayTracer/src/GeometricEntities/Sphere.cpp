@@ -3,13 +3,18 @@
 
 Sphere::Sphere()
 {
+	ID = -1;
+	MaterialID = -1;
+	Center = Vector3();
+	Radius = 0.0f;
 }
 
-Sphere::Sphere(Vector3 center, float radius)
+Sphere::Sphere(int id, int materialId, Vector3 center, float radius)
 {
+	ID = id;
+	MaterialID = materialId;
 	Center = center;
 	Radius = radius;
-
 }
 
 Sphere::~Sphere()

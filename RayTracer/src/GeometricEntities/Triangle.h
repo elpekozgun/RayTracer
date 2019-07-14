@@ -13,6 +13,7 @@ public:
 
 
 	Triangle();
+	Triangle(int id, int materialId, Vector3 vertices[3]);
 	~Triangle();
 
 

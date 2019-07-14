@@ -93,31 +93,43 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 
 	if( heading == TRIANGLE )
 	{
-		Triangle* triangle = new Triangle();
-		triangle->ID = ToInt(list[1]);
-		triangle->MaterialID = ToInt(list[2]);
-		Vector3 vertices  = ToVector3(list[3]);
-		triangle->Vertices[0] = vertexList.vertexList.at((int)vertices.X);
-		triangle->Vertices[1] = vertexList.vertexList.at((int)vertices.Y);
-		triangle->Vertices[2] = vertexList.vertexList.at((int)vertices.Z);
+		Vector3 vertices = ToVector3(list[3]);
+		Vector3 Vertices[3]
+		{
+			vertexList.vertexList.at((int)vertices.X),
+			vertexList.vertexList.at((int)vertices.Y),
+			vertexList.vertexList.at((int)vertices.Z)
+		};
+
+		Triangle* triangle = new Triangle
+		(
+			ToInt(list[1]),
+			ToInt(list[2]),
+			Vertices
+		);
 
 		return triangle;
 	}
 	else if( heading == SPHERE )
 	{
-		Sphere* sphere = new Sphere();
-		sphere->ID = ToInt(list[1]);
-		sphere->MaterialID = ToInt(list[2]);
-		sphere->Center = vertexList.vertexList.at(ToInt(list[3]));
-		sphere->Radius = ToFloat(list[4]);
+		Sphere* sphere = new Sphere
+		(
+			ToInt(list[1]),
+			ToInt(list[2]),
+			vertexList.vertexList.at(ToInt(list[3])),
+			ToFloat(list[4])
+		);
 
 		return sphere;
 	}
 	else if( heading == MESH )
 	{
-		Mesh* mesh = new Mesh();
-		mesh->ID = ToInt(list[1]);
-		mesh->MaterialID = ToInt(list[2]);
+		Mesh* mesh = new Mesh
+		(
+			ToInt(list[1]),
+			ToInt(list[2])
+		);
+
 		for( unsigned int i = 3; i < list.size(); i++ )
 		{
 			Triangle triangle;

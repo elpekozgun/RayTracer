@@ -8,9 +8,9 @@ class Plane : public IGeometricEntity
 public:
 
 	Vector3 Normal;
-	Vector3 SurfacePointA;
+	Vector3 SurfacePoint;
 
-	Plane(Vector3 normal);
+	Plane(Vector3 normal, Vector3 surfacePoint);
 	~Plane();
 
 	

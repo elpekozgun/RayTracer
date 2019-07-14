@@ -1,10 +1,10 @@
 #include "Plane.h"
 
 
-Plane::Plane(Vector3 normal)
+Plane::Plane(Vector3 normal,Vector3 surfacePoint)
 {
 	Normal = normal;
-	SurfacePointA = Vector3(0.0f, 0.0f, 0.0f);
+	SurfacePoint = surfacePoint;
 }
 
 Plane::~Plane()
@@ -13,5 +13,5 @@ Plane::~Plane()
 
 float Plane::Intersect(Ray ray)
 {
-	return (SurfacePointA - ray.origin).DotProduct(Normal) / (ray.direction.DotProduct(Normal));
+	return (SurfacePoint - ray.origin).DotProduct(Normal) / (ray.direction.DotProduct(Normal));
 }

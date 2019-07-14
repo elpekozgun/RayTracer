@@ -1,5 +1,14 @@
 #include "Camera.h"
 
+Vector3 Camera::GetScreenPixel(int i, int j)
+{
+	auto sU = (NearPlane.r - NearPlane.l) * (i + 0.5f) / ScreenResolution.x;
+	auto sV = (NearPlane.t - NearPlane.b) * (j + 0.5f) / ScreenResolution.y;
+	auto distance = Position.Z + NearDistance;
+
+	return Vector3(NearPlane.l + sU, NearPlane.t - sV, distance);
+}
+
 Camera::Camera()
 {
 	this->Position = Vector3();

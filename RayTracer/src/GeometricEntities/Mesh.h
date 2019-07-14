@@ -15,7 +15,7 @@ public:
 
 
 	Mesh();
-	Mesh(int id);
+	Mesh(int id, int materialID);
 	~Mesh();
 
 
