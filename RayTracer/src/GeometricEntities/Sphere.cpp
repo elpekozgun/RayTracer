@@ -3,16 +3,16 @@
 
 Sphere::Sphere()
 {
-	ID = -1;
-	MaterialID = -1;
+	Id = -1;
+	MaterialId = -1;
 	Center = Vector3();
 	Radius = 0.0f;
 }
 
 Sphere::Sphere(int id, int materialId, Vector3 center, float radius)
 {
-	ID = id;
-	MaterialID = materialId;
+	Id = id;
+	MaterialId = materialId;
 	Center = center;
 	Radius = radius;
 }
@@ -36,4 +36,14 @@ float Sphere::Intersect(Ray ray)
 eEntityType Sphere::GetType()
 {
 	return eEntityType::sphere;
+}
+
+int Sphere::ID()
+{
+	return Id;
+}
+
+int Sphere::MaterialID()
+{
+	return MaterialId;
 }

@@ -15,6 +15,8 @@ public:
 
 	
 	virtual float Intersect(Ray ray) override;
+	virtual int ID() override;
+	virtual int MaterialID() override;
 
 };
 

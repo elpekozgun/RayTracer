@@ -7,8 +7,6 @@ class Sphere : public IGeometricEntity, IEntity
 {
 public:
 
-	int ID;
-	int MaterialID;
 	Vector3 Center;
 	float Radius;
 	
@@ -16,12 +14,15 @@ public:
 	Sphere(int id, int materialId, Vector3 center, float radius);
 	~Sphere();
 
-	virtual float Intersect(Ray ray) override;
-
-
-	// Inherited via IEntity
+	
 	virtual eEntityType GetType() override;
 
+	virtual float Intersect(Ray ray) override;
+	virtual int ID() override;
+	virtual int MaterialID() override;
+private:
+	int Id;
+	int MaterialId;
 };
 
 #endif

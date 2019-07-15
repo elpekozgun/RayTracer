@@ -40,6 +40,13 @@ float Vector3::DistanceToOther(Vector3 other)
 	return 0.0f;
 }
 
+Vector3 Vector3::Normalized()
+{
+	float magnitude = sqrtf(X * X + Y * Y + Z * Z);
+
+	return Vector3(X / magnitude, Y / magnitude, Z / magnitude);
+}
+
 Vector3::~Vector3()
 {
 }

@@ -15,3 +15,13 @@ float Plane::Intersect(Ray ray)
 {
 	return (SurfacePoint - ray.origin).DotProduct(Normal) / (ray.direction.DotProduct(Normal));
 }
+
+int Plane::ID()
+{
+	return 0;
+}
+
+int Plane::MaterialID()
+{
+	return 0;
+}

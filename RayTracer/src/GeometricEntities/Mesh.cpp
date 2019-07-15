@@ -2,15 +2,15 @@
 
 Mesh::Mesh()
 {
-	ID = -1;
-	MaterialID = -1;
+	Id = -1;
+	MaterialId = -1;
 	Triangles = std::vector<Triangle>{};
 }
 
 Mesh::Mesh(int id,int materialID)
 {
-	ID = id;
-	MaterialID = materialID;
+	Id = id;
+	MaterialId = materialID;
 	std::vector<Triangle> Triangles;
 }
 
@@ -30,6 +30,16 @@ float Mesh::Intersect(Ray ray)
 eEntityType Mesh::GetType()
 {
 	return eEntityType::mesh;
+}
+
+int Mesh::ID()
+{
+	return Id;
+}
+
+int Mesh::MaterialID()
+{
+	return MaterialId;
 }
 
 

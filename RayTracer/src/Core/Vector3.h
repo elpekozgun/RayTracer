@@ -18,6 +18,7 @@ public:
 	float DotProductNormalized(Vector3 other);
 	Vector3 CrossProduct(Vector3 other);
 	float DistanceToOther(Vector3 other);
+	Vector3 Normalized();
 
 	inline Vector3 operator + (const Vector3& p) const { return Vector3(this->X + p.X, this->Y + p.Y, this->Z + p.Z); }
 	inline Vector3 operator - (const Vector3& p) const { return Vector3(this->X - p.X, this->Y - p.Y, this->Z - p.Z); }

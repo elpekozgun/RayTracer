@@ -9,8 +9,7 @@ class Mesh : public IGeometricEntity , IEntity
 {
 public:
 
-	int ID;
-	int MaterialID;
+
 	std::vector<Triangle> Triangles;
 
 
@@ -22,7 +21,11 @@ public:
 	float Intersect(Ray ray) override;
 
 	virtual eEntityType GetType() override;
-
+	virtual int ID() override;
+	virtual int MaterialID() override;
+private:
+	int Id;
+	int MaterialId;
 };
 
 
