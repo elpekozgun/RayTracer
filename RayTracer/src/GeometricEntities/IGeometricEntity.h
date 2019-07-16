@@ -9,6 +9,7 @@ class IGeometricEntity
 
 public:
 	virtual float Intersect(Ray ray) = 0;
+	virtual Vector3 GetNormal(Vector3 point) = 0;
 	virtual int ID() = 0;
 	virtual int MaterialID() = 0;
 };

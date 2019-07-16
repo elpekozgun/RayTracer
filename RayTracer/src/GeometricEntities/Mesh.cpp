@@ -27,6 +27,12 @@ float Mesh::Intersect(Ray ray)
 	return 0;
 }
 
+Vector3 Mesh::GetNormal(Vector3 point)
+{
+	// No need normal for this object.
+	return Vector3();
+}
+
 eEntityType Mesh::GetType()
 {
 	return eEntityType::mesh;

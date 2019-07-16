@@ -17,12 +17,15 @@ public:
 	Mesh(int id, int materialID);
 	~Mesh();
 
-
-	float Intersect(Ray ray) override;
-
+	// IEntity
 	virtual eEntityType GetType() override;
+	
+	// IGeometricEntity
+	float Intersect(Ray ray) override;
+	virtual Vector3 GetNormal(Vector3 point) override;
 	virtual int ID() override;
 	virtual int MaterialID() override;
+
 private:
 	int Id;
 	int MaterialId;

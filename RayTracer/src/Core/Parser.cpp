@@ -58,7 +58,7 @@ IEntity* Parser::GenerateEntity(std::vector<std::string> list)
 		material->Diffuse = ToVector3(list[3]);
 		material->Specular = ToVector3(list[4]);
 		material->PhongExponent = ToFloat(list[5]);
-		material->Specular = ToVector3(list[6]);
+		material->MirrorReflectance = ToVector3(list[6]);
 
 		return material;
 	}

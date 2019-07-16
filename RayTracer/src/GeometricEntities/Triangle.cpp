@@ -24,10 +24,13 @@ Triangle
 {
 }
 
-float Triangle::Intersect(Ray ray)
+Vector3 Triangle::GetNormal(Vector3 point)
 {
-	auto t2 = Intersect2(ray);
+	return (Vertices[1] - Vertices[0]).CrossProduct(Vertices[2] - Vertices[0]).Normalized();
+}
 
+float Triangle::Intersect2(Ray ray)
+{
 	/*Vector3 normal = (Vertices[1] - Vertices[0]).CrossProduct(Vertices[2] - Vertices[0]).Normalized();
 	Vector3 pointOnPlane = Vertices[0];
 	Plane plane(normal, pointOnPlane);
@@ -42,10 +45,10 @@ float Triangle::Intersect(Ray ray)
 		return t;
 	}
 	*/
-	return t2;
+	return 0;
 }
 
-float Triangle::Intersect2(Ray ray)
+float Triangle::Intersect(Ray ray)
 {
 	auto a = Vertices[0];
 	auto b = Vertices[1];

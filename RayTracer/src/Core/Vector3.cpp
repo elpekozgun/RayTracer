@@ -35,9 +35,9 @@ Vector3 Vector3::CrossProduct(Vector3 other)
 	return Vector3(x, y, z);
 }
 
-float Vector3::DistanceToOther(Vector3 other)
+float Vector3::Length()
 {
-	return 0.0f;
+	return sqrt(this->X * this->X + this->Y * this->Y + this->Z * this->Z);
 }
 
 Vector3 Vector3::Normalized()

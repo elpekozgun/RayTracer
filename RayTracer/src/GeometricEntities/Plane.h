@@ -13,8 +13,9 @@ public:
 	Plane(Vector3 normal, Vector3 surfacePoint);
 	~Plane();
 
-	
+	// IGeometricEntity
 	virtual float Intersect(Ray ray) override;
+	virtual Vector3 GetNormal(Vector3 point) override;
 	virtual int ID() override;
 	virtual int MaterialID() override;
 

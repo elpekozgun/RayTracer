@@ -140,7 +140,7 @@ int main()
 
 	// Main Algorithm.
 
-	float tMin = 478939101.0f;
+	float tMin = INFINITY;
 	IGeometricEntity* closestObject = nullptr;
 
 	for(unsigned int j = 0; j < camera.ScreenResolution.y; j++)
@@ -149,11 +149,14 @@ int main()
 		for(unsigned int i = 0; i < camera.ScreenResolution.x; i++)
 		{
 			float t = 0;
-			tMin = 478939101.0f;
+			tMin = INFINITY;
 
 			Ray ray(camera.Position, camera.GetScreenPixel(i,j));
 			for(auto& entity : GeometricEntities)
 			{
+				// Costly?? Maybe predefined?
+				int matId = entity->MaterialID();
+				Material mat = *std::find_if(materials.begin(), materials.end(), [matId](Material& y) -> bool { return y.ID == matId; })._Ptr;
 
 				if(((Mesh*)entity)->GetType() == eEntityType::mesh)
 				{
@@ -161,20 +164,22 @@ int main()
 					for(auto& triangle : mesh->Triangles)
 					{
 						t = triangle.Intersect(ray);
+						Vector3 hitpoint = ray.origin + ray.direction.Normalized() * t;
 						if(t > 0 && t <= tMin)
 						{
 							tMin = t;
-							line.at(i) = (materials.at(mesh->MaterialID() - 1)).Diffuse * 255;
+							line.at(i) = Shader::CalculateLighting(&triangle, hitpoint, triangle.GetNormal(hitpoint), camera.Position, mat, pointLights,ambientLight, shadowRayEpsilon);
 						}
 					}
 				}
 				else
 				{
 					t = entity->Intersect(ray);
+					Vector3 hitpoint = ray.origin + ray.direction.Normalized() * t;
 					if(t > 0 && t <= tMin)
 					{
 						tMin = t;
-						line.at(i) = (materials.at(entity->MaterialID() - 1)).Diffuse * 255;
+						line.at(i) = Shader::CalculateLighting(entity, hitpoint, entity->GetNormal(hitpoint), camera.Position, mat, pointLights, ambientLight, shadowRayEpsilon);
 					}
 				}
 			}

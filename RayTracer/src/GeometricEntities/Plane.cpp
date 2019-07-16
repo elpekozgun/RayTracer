@@ -16,6 +16,11 @@ float Plane::Intersect(Ray ray)
 	return (SurfacePoint - ray.origin).DotProduct(Normal) / (ray.direction.DotProduct(Normal));
 }
 
+Vector3 Plane::GetNormal(Vector3 Point)
+{
+	return Normal;
+}
+
 int Plane::ID()
 {
 	return 0;

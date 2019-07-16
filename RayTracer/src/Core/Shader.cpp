@@ -11,31 +11,38 @@ Shader::~Shader()
 
 }
 
-Vector3 Shader::CalculateLighting(Material mat, std::vector<PointLight> pointLights)
+Vector3 Shader::CalculateLighting(IGeometricEntity* entity, Vector3 hitPoint, Vector3 normal, Vector3 eye, Material mat, std::vector<PointLight> pointLights, Vector3 ambientLight, float shadowRayEpsilon)
 {
-	return Vector3(); // CalculateAmbient(mat.Ambient) + CalculateDiffuse(mat.Diffuse, pointLights) + CalculateSpecular(mat.Specular, mat.PhongExponent) + CalculateReflectance(mat.MirrorReflectance);
-}
+	Vector3 lightColor(0,0,0);
 
-Vector3 Shader::CalculateAmbient(Vector3 ambient)
-{
-	return ambient * 0.2f;
-}
-
-Vector3 Shader::CalculateDiffuse(Vector3 diffuse, std::vector<PointLight> pointLights, Vector3 hitPoint, Vector3 normal)
-{
 	for(auto& light : pointLights)
 	{
-		diffuse = light.Intensity * normal.DotProductNormalized(light.Position);
+		Vector3 lightDir = (light.Position - hitPoint).Normalized();
+		float distance = (light.Position - hitPoint).Length();
+
+
+		// Crap Method
+		//Vector3 h = (light.Position - hitPoint + eye - hitPoint) / 2;
+		//float spec = powf(normal.DotProductNormalized(h), mat.PhongExponent) * light.Intensity.X / (distance * distance);
+		
+		float diff = fmaxf(normal.DotProductNormalized(lightDir),0) * light.Intensity.X / (distance * distance);
+		
+		Vector3 reflectDir = Reflect(lightDir, normal);
+		float spec = powf(eye.DotProductNormalized(reflectDir), mat.PhongExponent) * light.Intensity.X / (distance * distance);
+
+		Ray shadowRay(hitPoint + lightDir * shadowRayEpsilon,light.Position);
+		entity->Intersect(shadowRay);
+
+		auto color = mat.Diffuse * diff  +  mat.Specular *  spec;
+
+		lightColor = lightColor + color;
 	}
-	return Vector3();
+
+	return lightColor + ambientLight;
 }
 
-Vector3 Shader::CalculateSpecular(Vector3 specular, float phongExponent)
+Vector3 Shader::Reflect(Vector3 viewDirection, Vector3 normal)
 {
-	return Vector3();
+	return normal * 2.0f * normal.DotProductNormalized(viewDirection) - viewDirection;
 }
 
-Vector3 Shader::CalculateReflectance(Vector3 reflectance)
-{
-	return Vector3();
-}
