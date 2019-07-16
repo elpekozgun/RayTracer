@@ -4,9 +4,8 @@ Vector3 Camera::GetScreenPixel(int i, int j)
 {
 	auto sU = (NearPlane.r - NearPlane.l) * (i + 0.5f) / ScreenResolution.x;
 	auto sV = (NearPlane.t - NearPlane.b) * (j + 0.5f) / ScreenResolution.y;
-	auto distance = -NearDistance;
 
-	return Vector3(NearPlane.l + sU, NearPlane.t - sV, distance);
+	return Vector3(NearPlane.l + sU, NearPlane.t - sV, -NearDistance);
 }
 
 Camera::Camera()

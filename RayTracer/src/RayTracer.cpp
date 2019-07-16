@@ -164,22 +164,22 @@ int main()
 					for(auto& triangle : mesh->Triangles)
 					{
 						t = triangle.Intersect(ray);
-						Vector3 hitpoint = ray.origin + ray.direction.Normalized() * t;
+						Vector3 hitpoint = ray.origin + ray.direction * t;
 						if(t > 0 && t <= tMin)
 						{
 							tMin = t;
-							line.at(i) = Shader::CalculateLighting(&triangle, hitpoint, triangle.GetNormal(hitpoint), camera.Position, mat, pointLights,ambientLight, shadowRayEpsilon);
+							line.at(i) = Shader::CalculateLighting(GeometricEntities, hitpoint, triangle.GetNormal(hitpoint), camera.Position, mat, pointLights,ambientLight, shadowRayEpsilon);
 						}
 					}
 				}
 				else
 				{
 					t = entity->Intersect(ray);
-					Vector3 hitpoint = ray.origin + ray.direction.Normalized() * t;
+					Vector3 hitpoint = ray.origin + ray.direction * t;
 					if(t > 0 && t <= tMin)
 					{
 						tMin = t;
-						line.at(i) = Shader::CalculateLighting(entity, hitpoint, entity->GetNormal(hitpoint), camera.Position, mat, pointLights, ambientLight, shadowRayEpsilon);
+						line.at(i) = Shader::CalculateLighting(GeometricEntities, hitpoint, entity->GetNormal(hitpoint), camera.Position, mat, pointLights, ambientLight, shadowRayEpsilon);
 					}
 				}
 			}
