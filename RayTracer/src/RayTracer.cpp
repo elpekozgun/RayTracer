@@ -141,14 +141,13 @@ int main()
 	// Main Algorithm.
 
 	float tMin = INFINITY;
+	float t = 0;
 	IGeometricEntity* closestObject = nullptr;
 
 	for(unsigned int j = 0; j < camera.ScreenResolution.y; j++)
 	{
-		vector<Vector3> line((int)camera.ScreenResolution.x);
 		for(unsigned int i = 0; i < camera.ScreenResolution.x; i++)
 		{
-			float t = 0;
 			tMin = INFINITY;
 
 			Ray ray(camera.Position, camera.GetScreenPixel(i,j));
@@ -167,8 +166,9 @@ int main()
 						Vector3 hitpoint = ray.origin + ray.direction * t;
 						if(t > 0 && t <= tMin)
 						{
+							closestObject = &triangle;
 							tMin = t;
-							line.at(i) = Shader::CalculateLighting(GeometricEntities, hitpoint, triangle.GetNormal(hitpoint), camera.Position, mat, pointLights,ambientLight, shadowRayEpsilon);
+							Image.at(j).at(i) = Shader::CalculateLighting(GeometricEntities, hitpoint, triangle.GetNormal(hitpoint), camera.Position, mat, pointLights,ambientLight, shadowRayEpsilon);
 						}
 					}
 				}
@@ -179,13 +179,13 @@ int main()
 					if(t > 0 && t <= tMin)
 					{
 						tMin = t;
-						line.at(i) = Shader::CalculateLighting(GeometricEntities, hitpoint, entity->GetNormal(hitpoint), camera.Position, mat, pointLights, ambientLight, shadowRayEpsilon);
+						closestObject = entity;
+						Image.at(j).at(i) = Shader::CalculateLighting(GeometricEntities, hitpoint, entity->GetNormal(hitpoint), camera.Position, mat, pointLights, ambientLight, shadowRayEpsilon);
 					}
 				}
 			}
 
 		}
-		Image.at(j) = line;
 	}
 	auto finish = chrono::high_resolution_clock::now();
 	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;

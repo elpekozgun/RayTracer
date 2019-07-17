@@ -32,6 +32,10 @@ float Sphere::Intersect(Ray ray)
 	Vector3	 o_c = ray.origin - Center;
 	float do_c = ray.direction.DotProduct(o_c);
 
+	if(do_c > 0)
+	{
+		return 0;
+	}
 	float t1 = (-do_c + sqrt(powf(do_c, 2.0f) - dd * (o_c.DotProduct(o_c) - Radius * Radius))) / dd;
 	float t2 = (-do_c - sqrt(powf(do_c, 2.0f) - dd * (o_c.DotProduct(o_c) - Radius * Radius))) / dd;
 

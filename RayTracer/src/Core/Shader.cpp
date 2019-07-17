@@ -19,16 +19,19 @@ Vector3 Shader::CalculateLighting(std::vector<IGeometricEntity*> entities, Vecto
 	{
 		Vector3 lightDir = (light.Position - hitPoint).Normalized();
 		float distance = (light.Position - hitPoint).Length();
+		float Lambertian = fmaxf(normal.DotProduct(lightDir), 0.0f);
 
 
-		// Crap Method
-		//Vector3 h = (light.Position - hitPoint + eye - hitPoint) / 2;
-		//float spec = powf(normal.DotProductNormalized(h), mat.PhongExponent) * light.Intensity.X / (distance * distance);
-
-		float diff = fmaxf(normal.DotProductNormalized(lightDir),0) * light.Intensity.X / (distance * distance);
-		
-		Vector3 reflectDir = Reflect(lightDir * -1.0f, normal);
-		float spec = powf((eye - hitPoint).DotProductNormalized(reflectDir), mat.PhongExponent) * light.Intensity.X / (distance * distance);
+		Vector3 spec;
+		Vector3 diff;
+		if(Lambertian > 0)
+		{
+			//Vector3 h = (light.Position - hitPoint + eye - hitPoint).Normalized();
+			//spec = light.Intensity * powf(normal.DotProductNormalized(h), mat.PhongExponent) / (distance * distance);
+			Vector3 reflectDir = Reflect(lightDir , normal);
+			spec = light.Intensity * powf(fmaxf(0.0f, (eye - hitPoint).DotProductNormalized(reflectDir)), mat.PhongExponent) / (distance * distance );
+		}
+		diff = light.Intensity * Lambertian / (distance * distance);
 
 		Ray shadowRay(hitPoint + lightDir * shadowRayEpsilon, light.Position - hitPoint);
 
@@ -37,15 +40,15 @@ Vector3 Shader::CalculateLighting(std::vector<IGeometricEntity*> entities, Vecto
 		{
 			if(entity->Intersect(shadowRay) > 0)
 			{
-				diff = 0;
-				spec = 0;
+				diff = Vector3();
+				spec = Vector3();
 				break;
 			}
 		}
 
-		auto color = mat.Diffuse * diff  +  mat.Specular *  spec;
+		auto color = mat.Diffuse * diff + mat.Specular * spec;
 
-		lightColor = lightColor + color;
+		lightColor += color;
 	}
 
 	return lightColor + ambientLight;
@@ -53,10 +56,6 @@ Vector3 Shader::CalculateLighting(std::vector<IGeometricEntity*> entities, Vecto
 
 Vector3 Shader::Reflect(Vector3 lightDirection, Vector3 normal)
 {
-	//return normal * 2.0f * normal.DotProductNormalized(lightDirection) - lightDirection;
-	//auto a = (lightDirection - normal * normal.DotProductNormalized(lightDirection) * 2.0f).Normalized();
-	//auto b = lightDirection - normal * normal.DotProductNormalized(lightDirection) * 2.0f;
-	return lightDirection - normal * normal.DotProductNormalized(lightDirection) * 2.0f;
-	
+	return -lightDirection + normal * normal.DotProductNormalized(lightDirection) * 2.0f;
 }
 
