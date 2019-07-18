@@ -131,7 +131,6 @@ int main()
 	//								[](IEntity* x)->bool { return x->GetType() == eEntityType::camera; } 
 	//)._Ptr);
 	Image.resize((int)camera.ScreenResolution.x, std::vector<Vector3>((int)camera.ScreenResolution.y));
-
 	
 	//----------------------------------GEOMETRIC ENTITIES--------------------------------
 
@@ -140,7 +139,17 @@ int main()
 		auto entity = Parser::GenerateGeometricEntity(list, vertexList);
 		if(entity)
 		{
-			GeometricEntities.push_back(entity);
+			if(((Mesh*)entity)->GetType() == eEntityType::mesh)
+			{
+				for(auto& triangle : ((Mesh*)entity)->Triangles)
+				{
+					GeometricEntities.push_back(new Triangle(triangle));
+				}
+			}
+			else
+			{
+				GeometricEntities.push_back(entity);
+			}
 		}
 	}
 
@@ -169,31 +178,13 @@ int main()
 					previousMatId = matId;
 				}
 
-				if(((Mesh*)entity)->GetType() == eEntityType::mesh)
+				t = entity->Intersect(ray);
+				Vector3 hitpoint = ray.origin + ray.direction * t;
+				if(t > 0 && t <= tMin)
 				{
-					auto mesh = dynamic_cast<Mesh*>(entity);
-					for(auto& triangle : mesh->Triangles)
-					{
-						t = triangle.Intersect(ray);
-						Vector3 hitpoint = ray.origin + ray.direction * t;
-						if(t > 0 && t <= tMin)
-						{
-							closestObject = &triangle;
-							tMin = t;
-							Image.at(j).at(i) = Shader::CalculateLighting(GeometricEntities, hitpoint, triangle.GetNormal(hitpoint), camera.Position, mat, pointLights,ambientLight, shadowRayEpsilon);
-						}
-					}
-				}
-				else
-				{
-					t = entity->Intersect(ray);
-					Vector3 hitpoint = ray.origin + ray.direction * t;
-					if(t > 0 && t <= tMin)
-					{
-						tMin = t;
-						closestObject = entity;
-						Image.at(j).at(i) = Shader::CalculateLighting(GeometricEntities, hitpoint, entity->GetNormal(hitpoint), camera.Position, mat, pointLights, ambientLight, shadowRayEpsilon);
-					}
+					tMin = t;
+					closestObject = entity;
+					Image.at(j).at(i) = Shader::CalculateLighting(GeometricEntities, hitpoint, entity->GetNormal(hitpoint), camera.Position, mat, pointLights, ambientLight, shadowRayEpsilon, backgroundColor, 0);
 				}
 			}
 
@@ -204,7 +195,6 @@ int main()
 	std::cout << "time elapsed: " << seconds.count() << "seconds" << endl; 
 
 
-	
 	Parser::GeneratePPMfile((int)camera.ScreenResolution.x, (int)camera.ScreenResolution.y, Image);
 
 

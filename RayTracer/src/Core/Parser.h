@@ -43,7 +43,7 @@ public:
 	static std::vector<std::vector<std::string>> Parse(std::string path);
 	static IEntity* GenerateEntity(std::vector<std::string> list);
 	static IGeometricEntity* GenerateGeometricEntity(std::vector<std::string> list, VertexList& vertices);
-	static void GeneratePPMfile(int width, int height, std::vector<std::vector<Vector3>> colorData);
+	static void GeneratePPMfile(unsigned int width, unsigned int height, std::vector<std::vector<Vector3>> colorData);
 
 private:
 	static Vector2 ToVector2(std::string line);

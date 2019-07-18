@@ -154,7 +154,7 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 	return nullptr;
 }
 
-void Parser::GeneratePPMfile(int width, int height, std::vector<std::vector<Vector3>> colorData)
+void Parser::GeneratePPMfile(unsigned int width, unsigned int height, std::vector<std::vector<Vector3>> colorData)
 {
 	std::ofstream outfile("test.ppm");
 
