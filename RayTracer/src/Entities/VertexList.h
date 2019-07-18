@@ -12,6 +12,10 @@ class VertexList : public IEntity
 		std::map<int,Vector3> vertexList;
 
 		virtual eEntityType GetType() override;
+
+		VertexList();
+		~VertexList();
+
 };
 
 

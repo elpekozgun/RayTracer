@@ -17,7 +17,7 @@ public:
 	Shader();
 	~Shader();
 
-	static Vector3 CalculateLighting(std::vector<IGeometricEntity*> entities, Vector3 hitPoint, Vector3 normal, Vector3 eye, Material mat, std::vector<PointLight> pointLights, Vector3 ambientLight, float shadowRayEpsilon);
+	static Vector3 CalculateLighting(std::vector<IGeometricEntity*> entities, Vector3 hitPoint, Vector3 normal, Vector3 eye, Material& mat, std::vector<PointLight>& pointLights, Vector3 ambientLight, float shadowRayEpsilon);
 
 
 private:

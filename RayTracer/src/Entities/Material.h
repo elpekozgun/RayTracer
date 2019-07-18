@@ -15,6 +15,7 @@ public:
 	Vector3 MirrorReflectance;
 
 	Material();
+	~Material();
 	
 
 	// Inherited via IEntity

@@ -7,6 +7,7 @@ BackgroundColor::BackgroundColor()
 
 BackgroundColor::~BackgroundColor()
 {
+	std::cout << "Background color deleted " << std::endl;
 }
 
 eEntityType BackgroundColor::GetType()
@@ -21,6 +22,7 @@ AmbientLight::AmbientLight()
 
 AmbientLight::~AmbientLight()
 {
+	std::cout << "Ambient light deleted " << std::endl;
 }
 
 eEntityType AmbientLight::GetType()
@@ -35,6 +37,7 @@ ShadowRayEpsilon::ShadowRayEpsilon()
 
 ShadowRayEpsilon::~ShadowRayEpsilon()
 {
+	std::cout << "Shadow Ray Epsilon deleted " << std::endl;
 }
 
 eEntityType ShadowRayEpsilon::GetType()
@@ -49,6 +52,7 @@ MaxRecursionDepth::MaxRecursionDepth()
 
 MaxRecursionDepth::~MaxRecursionDepth()
 {
+	std::cout << "max recursion depth deleted " << std::endl;
 }
 
 eEntityType MaxRecursionDepth::GetType()

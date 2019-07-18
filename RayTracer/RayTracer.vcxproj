@@ -129,10 +129,12 @@
     <ClCompile Include="src\Core\Shader.cpp" />
     <ClCompile Include="src\Core\Vector3.cpp" />
     <ClCompile Include="src\Entities\Camera.cpp" />
+    <ClCompile Include="src\Entities\IEntity.cpp" />
     <ClCompile Include="src\Entities\Material.cpp" />
     <ClCompile Include="src\Entities\PointLight.cpp" />
     <ClCompile Include="src\Entities\Primitive.cpp" />
     <ClCompile Include="src\Entities\VertexList.cpp" />
+    <ClCompile Include="src\GeometricEntities\IGeometricEntity.cpp" />
     <ClCompile Include="src\GeometricEntities\Mesh.cpp" />
     <ClCompile Include="src\GeometricEntities\Plane.cpp" />
     <ClCompile Include="src\GeometricEntities\Sphere.cpp" />

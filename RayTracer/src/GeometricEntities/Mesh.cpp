@@ -1,5 +1,6 @@
 #include "Mesh.h"
 
+
 Mesh::Mesh()
 {
 	Id = -1;
@@ -16,6 +17,7 @@ Mesh::Mesh(int id,int materialID)
 
 Mesh::~Mesh()
 {
+	 std::cout << "mesh deleted" << std::endl;
 }
 
 float Mesh::Intersect(Ray ray)

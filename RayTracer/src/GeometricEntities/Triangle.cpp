@@ -22,6 +22,7 @@ Triangle::Triangle(int id, int materialId, Vector3 vertices[3])
 Triangle
 ::~Triangle()
 {
+	//std::cout << "Triangle "  << Id << " deleted" << std::endl;
 }
 
 Vector3 Triangle::GetNormal(Vector3 point)

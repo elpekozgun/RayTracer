@@ -4,6 +4,7 @@
 #include <iterator>
 #include <chrono>
 
+
 #include "Core/Parser.h"
 #include "Core/Ray.h"
 #include "Core/Shader.h"
@@ -13,13 +14,18 @@
 #include "GeometricEntities/Mesh.h"
 #include "Entities/IEntity.h"
 
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+
 using namespace std;
 
 template<typename T>
 inline void DeleteItemAndEraseFromVector(vector<T*>& Entities, T* entity)
 {
 	std::vector<T*>::iterator itr = std::find(Entities.begin(), Entities.end(), entity);
-	delete(entity);
+	delete entity;
 	Entities.erase(itr);
 }
 
@@ -38,7 +44,7 @@ int main()
 	
 	vector<IEntity*> Entities;
 	vector<IGeometricEntity*> GeometricEntities;
-	vector<vector<string>>output = Parser::Parse("res/input2.txt");
+	vector<vector<string>>output = Parser::Parse("res/input3.txt");
 	
 
 	// Parse Input Text
@@ -142,20 +148,26 @@ int main()
 
 	float tMin = INFINITY;
 	float t = 0;
-	IGeometricEntity* closestObject = nullptr;
+	IGeometricEntity* closestObject = NULL;
+	Material mat;
 
 	for(unsigned int j = 0; j < camera.ScreenResolution.y; j++)
 	{
 		for(unsigned int i = 0; i < camera.ScreenResolution.x; i++)
 		{
 			tMin = INFINITY;
-
+			
+			int previousMatId = -1;
 			Ray ray(camera.Position, camera.GetScreenPixel(i,j));
 			for(auto& entity : GeometricEntities)
 			{
-				// Costly?? Maybe predefined?
 				int matId = entity->MaterialID();
-				Material mat = *std::find_if(materials.begin(), materials.end(), [matId](Material& y) -> bool { return y.ID == matId; })._Ptr;
+
+				if(previousMatId != matId)
+				{
+					mat = *std::find_if(materials.begin(), materials.end(), [matId](Material& y) -> bool { return y.ID == matId; })._Ptr;
+					previousMatId = matId;
+				}
 
 				if(((Mesh*)entity)->GetType() == eEntityType::mesh)
 				{
@@ -204,7 +216,8 @@ int main()
 	{
 		delete entity;
 	}
-	delete closestObject;
-	
+
+	_CrtDumpMemoryLeaks();
+
 	return 0;
 };

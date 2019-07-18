@@ -1,6 +1,7 @@
 #ifndef IENTITY_H
 #define IENTITY_H
 
+#include <iostream>
 
 enum class eEntityType : char
 {
@@ -27,7 +28,11 @@ class IEntity
 public:
 	virtual eEntityType GetType() = 0;
 
+	virtual ~IEntity() = 0;
+
+
 };
+
 
 
 #endif // !IENTITY_H

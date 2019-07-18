@@ -15,7 +15,7 @@ public:
 
 	Mesh();
 	Mesh(int id, int materialID);
-	~Mesh();
+	~Mesh() override;
 
 	// IEntity
 	virtual eEntityType GetType() override;

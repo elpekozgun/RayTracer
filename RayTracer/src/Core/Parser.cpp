@@ -1,7 +1,6 @@
 #include "Parser.h"
 #include <iterator>
 #include <iostream>
-
 Parser::Parser()
 {
 }
@@ -87,14 +86,14 @@ IEntity* Parser::GenerateEntity(std::vector<std::string> list)
 	return nullptr;
 }
 
-IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list, VertexList vertexList)
+IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list, VertexList& vertexList)
 {
 	std::string heading = list[0];
 
 	if( heading == TRIANGLE )
 	{
 		Vector3 vertices = ToVector3(list[3]);
-		Vector3 Vertices[3]
+		Vector3 triangleVertices[3]
 		{
 			vertexList.vertexList.at((int)vertices.X),
 			vertexList.vertexList.at((int)vertices.Y),
@@ -105,7 +104,7 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 		(
 			ToInt(list[1]),
 			ToInt(list[2]),
-			Vertices
+			triangleVertices
 		);
 
 		return triangle;
@@ -132,13 +131,20 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 
 		for( unsigned int i = 3; i < list.size(); i++ )
 		{
-			Triangle triangle;
 			Vector3 vertices = ToVector3(list[i]);
-			triangle.Vertices[0] = vertexList.vertexList.at((int)vertices.X);
-			triangle.Vertices[1] = vertexList.vertexList.at((int)vertices.Y);
-			triangle.Vertices[2] = vertexList.vertexList.at((int)vertices.Z);
+			Vector3 triangleVertices[3] =
+			{
+				vertexList.vertexList.at((int)vertices.X),
+				vertexList.vertexList.at((int)vertices.Y),
+				vertexList.vertexList.at((int)vertices.Z),
+			};
+			Triangle triangle
+			(
+				-1, 
+				mesh->MaterialID(), 
+				triangleVertices
+			);
 			mesh->Triangles.push_back(triangle);
-
 		}
 
 		return mesh;
@@ -151,6 +157,8 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 void Parser::GeneratePPMfile(int width, int height, std::vector<std::vector<Vector3>> colorData)
 {
 	std::ofstream outfile("test.ppm");
+
+	auto start = std::chrono::high_resolution_clock::now();
 
 	// P3 for plain, P6 for binary format.
 	outfile << "P3" << std::endl;
@@ -167,33 +175,9 @@ void Parser::GeneratePPMfile(int width, int height, std::vector<std::vector<Vect
 		outfile << std::endl;
 	}
 
-
-
-	//outfile << "P3" << std::endl;
-	//outfile << 4 << " " << 4 << std::endl;
-	//outfile << 255 << std::endl;
-
-	//std::vector<std::vector<Vector3>> colors;
-
-	//std::vector<Vector3> line1 = { Vector3(0,0,0) , Vector3(0,0,0) , Vector3(0,0,0) , Vector3(255,0,255) };
-	//std::vector<Vector3> line2 = { Vector3(0,0,0) , Vector3(0,255,255) , Vector3(0,0,0) , Vector3(0,0,0) };
-	//std::vector<Vector3> line3 = { Vector3(255,0,0) , Vector3(0,0,0) , Vector3(0,0,0) , Vector3(0,0,0) };
-	//std::vector<Vector3> line4 = { Vector3(0,0,255) , Vector3(0,0,0) , Vector3(0,0,0) , Vector3(0,0,0) };
-
-	//colors.push_back(line1);
-	//colors.push_back(line2);
-	//colors.push_back(line3);
-	//colors.push_back(line4);
-
-	//for(int j = 0; j < 4; j++)
-	//{
-	//	for(int i = 0; i < 4; i++)
-	//	{
-	//		auto value = colors.at(j).at(i);
-	//		outfile << value.X << "\t" << value.Y << "\t" << value.Z << "\t";
-	//	}
-	//	outfile << std::endl;
-	//}
+	auto finish = std::chrono::high_resolution_clock::now();
+	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
+	std::cout << "time elapsed: " << seconds.count() << "seconds" << std::endl;
 
 }
 

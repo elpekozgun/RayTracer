@@ -5,6 +5,7 @@
 #include <fstream>
 #include <sstream>
 #include <vector>
+#include <chrono>
 
 #include "Vector3.h"
 #include "..//Entities/Primitive.h"
@@ -17,6 +18,7 @@
 #include "..//GeometricEntities/Mesh.h"
 #include "..//GeometricEntities/Sphere.h"
 #include "..//GeometricEntities/Triangle.h"
+
 
 constexpr auto BACKGROUNDCOLOR		= "#BackgroundColor";
 constexpr auto MAXRECURSIONDEPTH	= "#MaxRecursionDepth";
@@ -40,7 +42,7 @@ public:
 
 	static std::vector<std::vector<std::string>> Parse(std::string path);
 	static IEntity* GenerateEntity(std::vector<std::string> list);
-	static IGeometricEntity* GenerateGeometricEntity(std::vector<std::string> list, VertexList vertices);
+	static IGeometricEntity* GenerateGeometricEntity(std::vector<std::string> list, VertexList& vertices);
 	static void GeneratePPMfile(int width, int height, std::vector<std::vector<Vector3>> colorData);
 
 private:
