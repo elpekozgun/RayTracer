@@ -30,25 +30,6 @@ Vector3 Triangle::GetNormal(Vector3 point)
 	return (Vertices[1] - Vertices[0]).CrossProduct(Vertices[2] - Vertices[0]).Normalized();
 }
 
-float Triangle::Intersect2(Ray ray)
-{
-	/*Vector3 normal = (Vertices[1] - Vertices[0]).CrossProduct(Vertices[2] - Vertices[0]).Normalized();
-	Vector3 pointOnPlane = Vertices[0];
-	Plane plane(normal, pointOnPlane);
-
-	auto t = plane.Intersect(ray);
-	auto hitPoint = ray.origin + ray.direction * t;
-
-
-
-	if(IsInsideTriangle(hitPoint, Vertices[0], Vertices[1], Vertices[2]))
-	{
-		return t;
-	}
-	*/
-	return 0;
-}
-
 float Triangle::Intersect(Ray ray)
 {
 	auto a = Vertices[0];

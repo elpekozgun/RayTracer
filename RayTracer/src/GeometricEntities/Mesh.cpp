@@ -22,17 +22,24 @@ Mesh::~Mesh()
 
 float Mesh::Intersect(Ray ray)
 {
+	float tMin = INFINITY;
+	float t = 0;
+
 	for(auto& triangle : this->Triangles)
 	{
-		triangle.Intersect(ray);
+		t = triangle.Intersect(ray);
+		if(t > 0 && t <= tMin)
+		{
+			tMin = t;
+			hitObjectNormal = triangle.GetNormal(Vector3());
+		}
 	}
-	return 0;
+	return t;
 }
 
 Vector3 Mesh::GetNormal(Vector3 point)
 {
-	// No need normal for this object.
-	return Vector3();
+	return hitObjectNormal;
 }
 
 eEntityType Mesh::GetType()

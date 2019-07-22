@@ -1,47 +1,46 @@
 #include "Renderer.h"
 
-Renderer::Renderer()
+
+Renderer::Renderer( Camera& camera, Scene& scene, std::vector<IGeometricEntity*> entities, std::vector<Material> materials)
 {
+	_Camera = camera;
+	_Scene = scene;
+	_Entities = entities;
+	_Materials = materials;
 }
 
 Renderer::~Renderer()
 {
 }
 
-void Renderer::Render(std::vector<std::vector<Vector3>>& image, Camera& camera, Scene& scene, std::vector<IGeometricEntity*> entities, std::vector<Material> materials)
+void Renderer::Render(std::vector<std::vector<Vector3>>& image)
 {
-	for(unsigned int j = 0; j < camera.ScreenResolution.y; j++)
+	for(unsigned int j = 0; j < _Camera.ScreenResolution.y; j++)
 	{
-		for(unsigned int i = 0; i < camera.ScreenResolution.x; i++)
+		for(unsigned int i = 0; i < _Camera.ScreenResolution.x; i++)
 		{
-			Ray ray(camera.Position, camera.GetScreenPixel(i, j));
+			Ray ray(_Camera.Position, _Camera.GetScreenPixel(i, j).Normalized());
 			image.at(j).at(i) = Trace
 			(
-				ray, 
-				camera.Position,
+				ray,
 				0,
-				scene,
-				entities,
-				materials,
 				true
 			);
 		}
 	}
 }
 
-Vector3 Renderer::Trace(Ray& ray, Vector3& view, int currentRecursion, Scene& scene, std::vector<IGeometricEntity*> entities, std::vector<Material> materials, bool includeAmbient)
+Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 {
 	float tMin = INFINITY;
 	int previousMatId = -1;
-	Material mat;
-	Vector3 rayColor = scene.BackgroundColor;
+	Vector3 rayColor = _Scene.BackgroundColor;
 	IGeometricEntity* hitEntity = NULL;
-	Vector3 reflectColor;
-	Vector3 hitPoint;
-	Vector3 normal;
+	Material mat;
+
 
 	float t = 0;
-	for(auto& entity : entities)
+	for(auto& entity : _Entities)
 	{
 		t = entity->Intersect(ray);
 		if(t > 0 && t <= tMin)
@@ -49,10 +48,8 @@ Vector3 Renderer::Trace(Ray& ray, Vector3& view, int currentRecursion, Scene& sc
 			int matId = entity->MaterialID();
 			if(previousMatId != matId)
 			{
-				mat = *std::find_if(materials.begin(), materials.end(), [matId](Material& y) -> bool { return y.ID == matId; })._Ptr;
-				previousMatId = matId;
+				mat = *std::find_if(_Materials.begin(), _Materials.end(), [matId](Material& y) -> bool { return y.ID == matId; })._Ptr;
 			}
-
 			tMin = t;
 			hitEntity = entity;
 		}
@@ -60,74 +57,56 @@ Vector3 Renderer::Trace(Ray& ray, Vector3& view, int currentRecursion, Scene& sc
 
 	if(hitEntity != NULL)
 	{
+		Vector3 hitPoint = ray.origin + ray.direction * tMin;
+		Vector3 normal = hitEntity->GetNormal(hitPoint);
 
-		hitPoint = ray.origin + ray.direction * tMin;
-		normal = hitEntity->GetNormal(hitPoint).Normalized();
-		
-		for(auto& light : scene.PointLights)
+		// REFLECTION PART
+		if(currentRecursion < _Scene.RecursionDepth && mat.MirrorReflectance.X != 0)
 		{
-			Vector3 lightDir = (light.Position - hitPoint).Normalized();
-			Vector3 viewDir = (view - hitPoint).Normalized();
-			Vector3 halfway = (lightDir + viewDir).Normalized();
-
-
-			float distance = (light.Position - hitPoint).Length();
-			float lambertian = fmaxf(normal.DotProduct(lightDir), 0.0f);
-
-			Vector3	spec = light.Intensity * powf(normal.DotProductNormalized(halfway), mat.PhongExponent) / (distance * distance);
-			Vector3	diff = light.Intensity * lambertian / (distance * distance);
-
-			Ray shadowRay(hitPoint + lightDir * scene.ShadowRayEpsilon, lightDir);
-			float shadowT = 0;
-			float t = 0;
-			float tMin = INFINITY;
-			for(auto& entity : entities)
-			{
-				if(entity->Intersect(shadowRay) > 0)
-				{
-					diff = Vector3();
-					spec = Vector3();
-					break;
-				}
-			}
-
-			rayColor = mat.Diffuse * diff + mat.Specular * spec;
+			Vector3 reflectDir = Shader::Reflect(-ray.direction.Normalized(), normal);
+			Ray reflectRay(hitPoint + reflectDir * _Scene.ShadowRayEpsilon, reflectDir);
+			rayColor += Trace(reflectRay, currentRecursion++, false) * mat.MirrorReflectance;
 		}
 
-		if(includeAmbient)
-		{
-			rayColor += scene.AmbientLight * mat.Ambient;
-		}
+		// TODO: REFRACTIVE PART
+
+		rayColor += GetColor(hitPoint, normal, mat);
 	}
-
-	if(currentRecursion < scene.RecursionDepth)
-	{
-		Vector3 reflectDir = Shader::Reflect(-ray.direction, normal);
-		Ray reflectRay(hitPoint + reflectDir * scene.ShadowRayEpsilon, reflectDir);
-		rayColor += Trace(reflectRay, hitPoint , currentRecursion + 1 , scene, entities, materials, false) * mat.MirrorReflectance;
-	}
-
-
 
 	return rayColor;
-		
-		//if(t > 0 && t <= tMin)
-		//{
-		//	tMin = t;
-		//	Vector3 hitPoint = ray.origin + ray.direction * t;
-		//	Vector3 normal = entity->GetNormal(hitPoint).Normalized();
-		//	Vector3	reflectDir = Shader::Reflect(-ray.direction, normal).Normalized();
+}
 
-		//	if(currentRecursion < scene.RecursionDepth)
-		//	{
-		//		Ray reflectionRay(hitPoint + reflectDir * scene.ShadowRayEpsilon, reflectDir);
-		//		Vector3 reflectionColor = Trace(reflectionRay, reflectionRay.origin, ++currentRecursion, scene, entities, materials, false) * mat.MirrorReflectance;
-		//		rayColor = reflectionColor;
-		//	}
-		//	rayColor = Shader::CalculateLighting(0, entities, hitPoint, normal, ray.origin , mat, scene, false);
-		//}
+Vector3 Renderer::GetColor(Vector3 hitPoint, Vector3 normal, Material mat)
+{
+	Vector3 color = _Scene.BackgroundColor;
 
+	for(auto& light : _Scene.PointLights)
+	{
+		Vector3 lightDir = (light.Position - hitPoint).Normalized();
+		Vector3 viewDir = (_Camera.Position - hitPoint).Normalized();
+		Vector3 halfway = (lightDir + viewDir).Normalized();
 
+		float distance = (light.Position - hitPoint).Length();
+		float lambertian = fmaxf(normal.DotProduct(lightDir), 0.0f);
 
+		Vector3	spec = light.Intensity * powf(normal.DotProductNormalized(halfway), mat.PhongExponent) / (distance * distance);
+		Vector3	diff = light.Intensity * lambertian / (distance * distance);
 
+		Ray shadowRay(hitPoint + lightDir * _Scene.ShadowRayEpsilon, lightDir);
+		for(auto& entity : _Entities)
+		{
+			if(entity->Intersect(shadowRay) > 0)
+			{
+				diff = Vector3();
+				spec = Vector3();
+				break;
+			}
+		}
+
+		color += mat.Diffuse * diff + mat.Specular * spec;
+	}
+
+	color += _Scene.AmbientLight * mat.Ambient;
+
+	return color;
 }

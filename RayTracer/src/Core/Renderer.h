@@ -1,5 +1,3 @@
-#define MAX_RAY_DEPTH 5
-
 #ifndef RENDERER_H
 #define RENDERER_H
 
@@ -17,15 +15,22 @@
 class Renderer
 {
 public:
-	Renderer();
+
+	Renderer(Camera& camera, Scene& scene, std::vector<IGeometricEntity*> entities, std::vector<Material> materials);
 	~Renderer();
 
-	static void Render(std::vector<std::vector<Vector3>>& image, Camera& camera, Scene& scene, std::vector<IGeometricEntity*> entities, std::vector<Material> materials);
-	static Vector3 Trace(Ray& ray, Vector3& camera, int currentRecursion, Scene& scene, std::vector<IGeometricEntity*> entities, std::vector<Material> materials, bool includeAmbient);
-
+	void Render(std::vector<std::vector<Vector3>>& image);
 
 private:
+	
+	Camera _Camera;
+	Scene _Scene;
+	std::vector<IGeometricEntity*> _Entities;
+	std::vector<Material> _Materials;
 
+
+	Vector3 Trace(Ray& ray, int currentRecursion, bool includeAmbient);
+	Vector3 GetColor(Vector3 hitPoint, Vector3 normal, Material mat);
 };
 
 

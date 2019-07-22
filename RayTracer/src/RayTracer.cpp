@@ -145,53 +145,14 @@ int main(int argc, char** argv)
 
 #pragma endregion
 
-	Renderer::Render(Image, camera, scene, GeometricEntities, materials);
-
-
-	/*float tMin = INFINITY;
-	float t = 0;
-	IGeometricEntity* closestObject = NULL;
-	Material mat;
-
-	for(unsigned int j = 0; j < camera.ScreenResolution.y; j++)
-	{
-		for(unsigned int i = 0; i < camera.ScreenResolution.x; i++)
-		{
-			tMin = INFINITY;
-			
-			int previousMatId = -1;
-			Ray ray(camera.Position, camera.GetScreenPixel(i,j));
-
-			for(auto& entity : GeometricEntities)
-			{
-				int matId = entity->MaterialID();
-
-				if(previousMatId != matId)
-				{
-					mat = *std::find_if(materials.begin(), materials.end(), [matId](Material& y) -> bool { return y.ID == matId; })._Ptr;
-					previousMatId = matId;
-				}
-
-				t = entity->Intersect(ray);
-				Vector3 hitpoint = ray.origin + ray.direction * t;
-				if(t > 0 && t <= tMin)
-				{
-					tMin = t;
-					closestObject = entity;
-					Image.at(j).at(i) = Shader::CalculateLighting(GeometricEntities, hitpoint, entity->GetNormal(hitpoint), camera.Position, mat, scene);
-				}
-			}
-
-		}
-	}
-*/
+	auto renderer = Renderer(camera, scene, GeometricEntities, materials);
+	renderer.Render(Image);
 
 	auto finish = chrono::high_resolution_clock::now();
 	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
 	std::cout << "time elapsed: " << seconds.count() << "seconds" << endl;
 
 	Parser::GeneratePPMfile((int)camera.ScreenResolution.x, (int)camera.ScreenResolution.y, Image);
-
 
 #pragma region Dispose
 

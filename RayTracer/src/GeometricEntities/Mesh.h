@@ -29,6 +29,8 @@ public:
 private:
 	int Id;
 	int MaterialId;
+
+	Vector3 hitObjectNormal;
 };
 
 
