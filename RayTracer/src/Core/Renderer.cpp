@@ -36,20 +36,23 @@ Vector3 Renderer::Trace(Ray& ray, Vector3& view, int currentRecursion, Scene& sc
 	Material mat;
 	Vector3 rayColor = scene.BackgroundColor;
 	IGeometricEntity* hitEntity = NULL;
+	Vector3 reflectColor;
+	Vector3 hitPoint;
+	Vector3 normal;
 
 	float t = 0;
 	for(auto& entity : entities)
 	{
-		int matId = entity->MaterialID();
-		if(previousMatId != matId)
-		{
-			mat = *std::find_if(materials.begin(), materials.end(), [matId](Material& y) -> bool { return y.ID == matId; })._Ptr;
-			previousMatId = matId;
-		}
-
 		t = entity->Intersect(ray);
 		if(t > 0 && t <= tMin)
 		{
+			int matId = entity->MaterialID();
+			if(previousMatId != matId)
+			{
+				mat = *std::find_if(materials.begin(), materials.end(), [matId](Material& y) -> bool { return y.ID == matId; })._Ptr;
+				previousMatId = matId;
+			}
+
 			tMin = t;
 			hitEntity = entity;
 		}
@@ -57,8 +60,9 @@ Vector3 Renderer::Trace(Ray& ray, Vector3& view, int currentRecursion, Scene& sc
 
 	if(hitEntity != NULL)
 	{
-		Vector3 hitPoint = ray.origin + ray.direction * tMin;
-		Vector3 normal = hitEntity->GetNormal(hitPoint).Normalized();
+
+		hitPoint = ray.origin + ray.direction * tMin;
+		normal = hitEntity->GetNormal(hitPoint).Normalized();
 		
 		for(auto& light : scene.PointLights)
 		{
@@ -87,7 +91,7 @@ Vector3 Renderer::Trace(Ray& ray, Vector3& view, int currentRecursion, Scene& sc
 				}
 			}
 
-			rayColor = mat.Diffuse * diff + mat.Specular * spec; //+ mat.MirrorReflectance * reflectColor;
+			rayColor = mat.Diffuse * diff + mat.Specular * spec;
 		}
 
 		if(includeAmbient)
@@ -96,15 +100,12 @@ Vector3 Renderer::Trace(Ray& ray, Vector3& view, int currentRecursion, Scene& sc
 		}
 	}
 
-
-
-	//Vector3 reflectColor;
-	//Vector3 reflectDir = Shader::Reflect(-ray.direction, normal);
-	//if(currentRecursion < scene.RecursionDepth)
-	//{
-	//	Ray reflectRay(hitPoint + reflectDir * scene.ShadowRayEpsilon, reflectDir);
-	//	reflectColor = Trace(reflectRay, view, ++currentRecursion, scene, entities, materials, false);
-	//}
+	if(currentRecursion < scene.RecursionDepth)
+	{
+		Vector3 reflectDir = Shader::Reflect(-ray.direction, normal);
+		Ray reflectRay(hitPoint + reflectDir * scene.ShadowRayEpsilon, reflectDir);
+		rayColor += Trace(reflectRay, hitPoint , currentRecursion + 1 , scene, entities, materials, false) * mat.MirrorReflectance;
+	}
 
 
 
