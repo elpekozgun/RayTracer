@@ -12,13 +12,11 @@ Shader::~Shader()
 
 }
 
-constexpr int DEPTH = 3;
-
-Vector3 Shader::CalculateLighting(std::vector<IGeometricEntity*> entities, Vector3 hitPoint, Vector3 normal, Vector3 eye, Material& mat, std::vector<PointLight> &pointLights, Vector3 ambientLight, float shadowRayEpsilon, Vector3 backgroundColor, int recursionDepth)
+Vector3 Shader::CalculateLighting(int currentRecursion, std::vector<IGeometricEntity*> entities, Vector3 hitPoint, Vector3 normal, Vector3 eye, Material& mat, Scene& scene, bool includeAmbient)
 {
-	Vector3 lightColor(0,0,0);
+	Vector3 lightColor = scene.BackgroundColor;
 
-	for(auto& light : pointLights)
+	for(auto& light : scene.PointLights)
 	{
 		Vector3 lightDir = (light.Position - hitPoint).Normalized();
 		Vector3 viewDir = (eye - hitPoint).Normalized();
@@ -30,47 +28,41 @@ Vector3 Shader::CalculateLighting(std::vector<IGeometricEntity*> entities, Vecto
 
 		Vector3	spec = light.Intensity * powf(normal.DotProductNormalized(halfway), mat.PhongExponent) / (distance * distance);
 		Vector3	diff =  light.Intensity * lambertian / (distance * distance);
+		
+		Ray shadowRay(hitPoint + lightDir * scene.ShadowRayEpsilon, lightDir);
+		Ray reflectionRay(hitPoint + normal * scene.ShadowRayEpsilon, reflectDir);
+		Vector3 reflectHitPoint;
+		Vector3 reflectColor;
 
-		
-		Ray shadowRay(hitPoint + lightDir * shadowRayEpsilon, lightDir);
-		Ray reflectionRay(hitPoint, reflectDir);
 		float shadowT = 0;
-		
-		Vector3 reflectionColor;
 		float t = 0;
 		float tMin = INFINITY;
 		for(auto& entity : entities)
 		{
-			if(entity->Intersect(shadowRay) > 0)
-			{
-				diff = Vector3();
-				spec = Vector3();
-				break;
-			}
-
-			//if(recursionDepth < DEPTH)
+			//if(entity->Intersect(shadowRay) > 0)
 			//{
-			//	t = entity->Intersect(reflectionRay);
-			//	Vector3 hitpoint = reflectionRay.origin + reflectionRay.direction * t;
-			//	if(t > 0 && t <= tMin)
-			//	{
-			//		tMin = t;
-			//		reflectionColor = Shader::CalculateLighting(entities, hitpoint, entity->GetNormal(hitpoint), eye , mat, pointLights, ambientLight, shadowRayEpsilon, backgroundColor, ++recursionDepth);
-			//	}
+			//	diff = Vector3();
+			//	spec = Vector3();
+			//	break;
 			//}
 		}
 
 
-		auto color = mat.Diffuse * diff + mat.Specular * spec + reflectionColor;
+		Vector3	color = mat.Diffuse * diff  + mat.Specular * spec /*+ mat.MirrorReflectance * reflectColor*/;
 
 		lightColor += color;
 	}
 
-	return lightColor + ambientLight * mat.Ambient;
+	if(includeAmbient)
+	{
+		lightColor += scene.AmbientLight * mat.Ambient;
+	}
+	return lightColor;
 }
 
 Vector3 Shader::Reflect(Vector3 lightDirection, Vector3 normal)
 {
 	return -lightDirection + normal * normal.DotProductNormalized(lightDirection) * 2.0f;
 }
+
 

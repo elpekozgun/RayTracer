@@ -2,6 +2,7 @@
 #define SPHERE_H
 
 #include "IGeometricEntity.h"
+#include "../Entities/Material.h"
 
 class Sphere : public IGeometricEntity, IEntity
 {
@@ -9,6 +10,8 @@ public:
 
 	Vector3 Center;
 	float Radius;
+	Material* Material;
+
 	
 	Sphere();
 	Sphere(int id, int materialId, Vector3 center, float radius);

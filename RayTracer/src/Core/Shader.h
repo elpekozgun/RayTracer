@@ -17,12 +17,12 @@ public:
 	Shader();
 	~Shader();
 
-	static Vector3 CalculateLighting(std::vector<IGeometricEntity*> entities, Vector3 hitPoint, Vector3 normal, Vector3 eye, Material& mat, std::vector<PointLight>& pointLights, Vector3 ambientLight, float shadowRayEpsilon, Vector3 backGroundColor, int recursionDepth);
+	static Vector3 CalculateLighting(int currentRecursion, std::vector<IGeometricEntity*> entities, Vector3 hitPoint, Vector3 normal, Vector3 eye, Material& mat, Scene& scene,bool includeAmbient);
+	static Vector3 Reflect(Vector3 viewDirection, Vector3 normal);
 
 
 private:
 
-	static Vector3 Reflect(Vector3 viewDirection, Vector3 normal);
 
 };
 

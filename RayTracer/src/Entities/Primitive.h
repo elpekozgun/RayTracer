@@ -4,6 +4,27 @@
 
 #include "..//Core/Vector3.h"
 #include "IEntity.h"
+#include "PointLight.h"
+#include <vector>
+
+class Scene
+{
+public:
+	Vector3 BackgroundColor;
+	Vector3 AmbientLight;
+	std::vector<PointLight> PointLights;
+	int RecursionDepth;
+	float ShadowRayEpsilon; 
+
+
+
+	Scene(Vector3 backgroundColor, Vector3 ambientLight, std::vector<PointLight> pointLights, int recursionDepth, float shadowRayEpsilon);
+	Scene();
+	~Scene();
+
+private:
+
+};
 
 
 class BackgroundColor : public IEntity

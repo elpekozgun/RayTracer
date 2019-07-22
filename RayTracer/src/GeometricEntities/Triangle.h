@@ -3,12 +3,14 @@
 
 #include "Plane.h"
 #include "..////Core/Matrix3.h"
+#include "../Entities/Material.h"
 
 class Triangle : public IGeometricEntity, IEntity
 {
 public:
 
 	Vector3 Vertices[3];
+	Material* Material;
 
 	Triangle();
 	Triangle(int id, int materialId, Vector3 vertices[3]);

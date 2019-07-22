@@ -66,6 +66,9 @@
     <ClCompile Include="src\Entities\IEntity.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Core\Renderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\GeometricEntities\Mesh.h">
@@ -116,10 +119,15 @@
     <ClInclude Include="src\Core\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Core\Renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="res\input1.txt" />
     <Text Include="res\input2.txt" />
     <Text Include="res\input3.txt" />
+    <Text Include="res\input4.txt" />
+    <Text Include="res\input5.txt" />
   </ItemGroup>
 </Project>

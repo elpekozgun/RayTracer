@@ -4,20 +4,19 @@
 #include <iterator>
 #include <chrono>
 
-
 #include "Core/Parser.h"
 #include "Core/Ray.h"
 #include "Core/Shader.h"
-#include "GeometricEntities/IGeometricEntity.h"
+#include "Core/Renderer.h"
 #include "GeometricEntities/Sphere.h"
 #include "GeometricEntities/Plane.h"
 #include "GeometricEntities/Mesh.h"
 #include "Entities/IEntity.h"
 
-#define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
 
+#define _CRTDBG_MAP_ALLOC
 
 using namespace std;
 
@@ -37,15 +36,22 @@ inline void EraseFromVector(vector<T*>& Entities, T* entity)
 }
 
 
-int main()
+int main(int argc, char** argv)
 {
 	auto start = chrono::high_resolution_clock::now();
 
-	
 	vector<IEntity*> Entities;
 	vector<IGeometricEntity*> GeometricEntities;
-	vector<vector<string>>output = Parser::Parse("res/input3.txt");
 	
+	vector<vector<Vector3>> Image;
+	vector<Material> materials;
+	VertexList vertexList;
+	Camera camera;
+	Scene scene;
+	
+	vector<vector<string>>output = Parser::Parse("res/input4.txt");
+	//vector<vector<string>>output = Parser::Parse(argv[1]);
+
 
 	// Parse Input Text
 	for(unsigned int i = 0; i < output.size(); i++)
@@ -60,18 +66,7 @@ int main()
 		}
 	}
 
-	
-	//------------------------------------ENTITIES----------------------------------
-	Vector3 backgroundColor;
-	Vector3 ambientLight;
-	int maxRecursionDepth = 0;
-	float shadowRayEpsilon = 0.0f;
-	vector<PointLight> pointLights;
-	vector<Material> materials;
-	VertexList vertexList;
-	Camera camera;
-	vector<vector<Vector3>> Image;
-	
+#pragma region Entities
 
 	// Entities
 	for(unsigned int i = 0; i < Entities.size(); i)
@@ -79,22 +74,22 @@ int main()
 		auto entity = Entities.at(i);
 		if(entity->GetType() == eEntityType::backgroundColor)
 		{
-			backgroundColor = (dynamic_cast<BackgroundColor*>(entity))->BackgroundColorValue;
+			scene.BackgroundColor = (dynamic_cast<BackgroundColor*>(entity))->BackgroundColorValue;
 			DeleteItemAndEraseFromVector(Entities, entity);
 		}
 		else if(entity->GetType() == eEntityType::ambientLight)
 		{
-			ambientLight = (dynamic_cast<AmbientLight*>(entity))->AmbientLightValue;
+			scene.AmbientLight = (dynamic_cast<AmbientLight*>(entity))->AmbientLightValue;
 			DeleteItemAndEraseFromVector(Entities, entity);
 		}
 		else if(entity->GetType() == eEntityType::maxRecursionDepth)
 		{
-			maxRecursionDepth = (dynamic_cast<MaxRecursionDepth*>(entity))->MaxRecursionDepthValue;
+			scene.RecursionDepth = (dynamic_cast<MaxRecursionDepth*>(entity))->MaxRecursionDepthValue;
 			DeleteItemAndEraseFromVector(Entities, entity);
 		}
 		else if(entity->GetType() == eEntityType::shadowRayEpsilon)
 		{
-			shadowRayEpsilon = (dynamic_cast<ShadowRayEpsilon*>(entity))->ShadowRayEpsilonValue;
+			scene.ShadowRayEpsilon = (dynamic_cast<ShadowRayEpsilon*>(entity))->ShadowRayEpsilonValue;
 			DeleteItemAndEraseFromVector(Entities, entity);
 		}
 		else if(entity->GetType() == eEntityType::material)
@@ -104,7 +99,7 @@ int main()
 		}
 		else if(entity->GetType() == eEntityType::pointlight)
 		{
-			pointLights.push_back(*dynamic_cast<PointLight*>(entity));
+			scene.PointLights.push_back(*dynamic_cast<PointLight*>(entity));
 			DeleteItemAndEraseFromVector(Entities, entity);
 		}
 		else if(entity->GetType() == eEntityType::vertexlist)
@@ -123,16 +118,11 @@ int main()
 		}
 	}
 
-	//C++ 11 lambda expression, query similar to C# linq.Where(x = > x.GetType() == eEntityType.camera)
-	//camera = *dynamic_cast<Camera*>(*std::find_if
-	//(
-	//								Entities.begin(),
-	//								Entities.end(),
-	//								[](IEntity* x)->bool { return x->GetType() == eEntityType::camera; } 
-	//)._Ptr);
 	Image.resize((int)camera.ScreenResolution.x, std::vector<Vector3>((int)camera.ScreenResolution.y));
 	
-	//----------------------------------GEOMETRIC ENTITIES--------------------------------
+#pragma endregion
+
+#pragma region Geometric Entities
 
 	for(auto& list : output)
 	{
@@ -153,9 +143,12 @@ int main()
 		}
 	}
 
-	// Main Algorithm.
+#pragma endregion
 
-	float tMin = INFINITY;
+	Renderer::Render(Image, camera, scene, GeometricEntities, materials);
+
+
+	/*float tMin = INFINITY;
 	float t = 0;
 	IGeometricEntity* closestObject = NULL;
 	Material mat;
@@ -168,6 +161,7 @@ int main()
 			
 			int previousMatId = -1;
 			Ray ray(camera.Position, camera.GetScreenPixel(i,j));
+
 			for(auto& entity : GeometricEntities)
 			{
 				int matId = entity->MaterialID();
@@ -184,18 +178,22 @@ int main()
 				{
 					tMin = t;
 					closestObject = entity;
-					Image.at(j).at(i) = Shader::CalculateLighting(GeometricEntities, hitpoint, entity->GetNormal(hitpoint), camera.Position, mat, pointLights, ambientLight, shadowRayEpsilon, backgroundColor, 0);
+					Image.at(j).at(i) = Shader::CalculateLighting(GeometricEntities, hitpoint, entity->GetNormal(hitpoint), camera.Position, mat, scene);
 				}
 			}
 
 		}
 	}
+*/
+
 	auto finish = chrono::high_resolution_clock::now();
 	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
-	std::cout << "time elapsed: " << seconds.count() << "seconds" << endl; 
-
+	std::cout << "time elapsed: " << seconds.count() << "seconds" << endl;
 
 	Parser::GeneratePPMfile((int)camera.ScreenResolution.x, (int)camera.ScreenResolution.y, Image);
+
+
+#pragma region Dispose
 
 
 	for (IEntity* entity : Entities)
@@ -209,5 +207,10 @@ int main()
 
 	_CrtDumpMemoryLeaks();
 
+#pragma endregion
+
+
 	return 0;
 };
+
+

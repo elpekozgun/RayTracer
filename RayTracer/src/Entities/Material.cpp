@@ -12,7 +12,7 @@ Material::Material()
 
 Material::~Material()
 {
-	std::cout << "Material " << ID << " deleted" << std::endl;
+	//std::cout << "Material " << ID << " deleted" << std::endl;
 }
 
 eEntityType Material::GetType()

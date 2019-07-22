@@ -60,3 +60,22 @@ eEntityType MaxRecursionDepth::GetType()
 	return eEntityType::maxRecursionDepth;
 }
 
+Scene::Scene(Vector3 backgroundColor, Vector3 ambientLight, std::vector<PointLight> pointLights, int recursionDepth, float shadowRayEpsilon)
+{
+	this->BackgroundColor = backgroundColor;
+	this->AmbientLight = ambientLight;
+	this->PointLights = pointLights;
+	this->RecursionDepth = recursionDepth;
+	this->ShadowRayEpsilon = shadowRayEpsilon;
+}
+
+Scene::Scene()
+{
+	RecursionDepth = 0;
+	ShadowRayEpsilon = 0.0f;
+}
+
+
+Scene::~Scene()
+{
+}
