@@ -14,6 +14,9 @@ public:
 	Vector3(float x, float y, float z);
 	Vector3();
 
+	static Vector3 Zero();
+
+
 	float DotProduct(Vector3 other);
 	float DotProductNormalized(Vector3 other);
 	Vector3 CrossProduct(Vector3 other);

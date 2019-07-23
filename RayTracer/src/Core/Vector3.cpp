@@ -14,6 +14,11 @@ Vector3::Vector3()
 	this->Z = 0;
 }
 
+Vector3 Vector3::Zero()
+{
+	return Vector3(0.0f, 0.0f, 0.0f);
+}
+
 float Vector3::DotProduct(Vector3 other)
 {
 	return this->X * other.X + this->Y * other.Y + this->Z * other.Z;

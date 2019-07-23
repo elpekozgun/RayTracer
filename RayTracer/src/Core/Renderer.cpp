@@ -61,7 +61,7 @@ Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 		Vector3 normal = hitEntity->GetNormal(hitPoint);
 
 		// REFLECTION PART
-		if(currentRecursion < _Scene.RecursionDepth && mat.MirrorReflectance.X != 0)
+		if(currentRecursion < _Scene.RecursionDepth && mat.MirrorReflectance != Vector3::Zero())
 		{
 			Vector3 reflectDir = Shader::Reflect(-ray.direction.Normalized(), normal);
 			Ray reflectRay(hitPoint + reflectDir * _Scene.ShadowRayEpsilon, reflectDir);
