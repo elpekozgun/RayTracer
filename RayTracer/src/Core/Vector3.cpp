@@ -26,8 +26,8 @@ float Vector3::DotProduct(Vector3 other)
 
 float Vector3::DotProductNormalized(Vector3 other)
 {
-	float a = this->Magnitude();
-	float b = other.Magnitude();
+	float a = this->Length();
+	float b = other.Length();
 	return this->DotProduct(other) / (a * b);
 }
 
@@ -40,11 +40,6 @@ Vector3 Vector3::CrossProduct(Vector3 other)
 	return Vector3(x, y, z);
 }
 
-float Vector3::Magnitude()
-{
-	return sqrtf((this->X * this->X) + (this->Y * this->Y) + (this->Z * this->Z));
-}
-
 float Vector3::Length()
 {
 	return sqrt(this->X * this->X + this->Y * this->Y + this->Z * this->Z);
@@ -55,6 +50,11 @@ Vector3 Vector3::Normalized()
 	float magnitude = sqrtf(X * X + Y * Y + Z * Z);
 
 	return Vector3(X / magnitude, Y / magnitude, Z / magnitude);
+}
+
+float Vector3::DistanceTo(Vector3 other)
+{
+	return (*this - other).Length();
 }
 
 Vector3::~Vector3()

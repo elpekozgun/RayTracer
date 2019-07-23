@@ -16,11 +16,13 @@ public:
 	~Triangle();
 
 
+	Vector3 GetCenter();
+
 	// IEntity
 	virtual eEntityType GetType() override;
 
 	// IGeometricEntity
-	virtual float Intersect(Ray ray) override;
+	virtual std::pair<float, IGeometricEntity*> Intersect(Ray ray) override;
 	virtual Vector3 GetNormal(Vector3 Point) override;
 	virtual int ID() override;
 	virtual int MaterialID() override;

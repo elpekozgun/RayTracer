@@ -138,7 +138,7 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 				vertexList.vertexList.at((int)vertices.Y),
 				vertexList.vertexList.at((int)vertices.Z),
 			};
-			Triangle triangle
+			Triangle* triangle = new Triangle
 			(
 				-1, 
 				mesh->MaterialID(), 

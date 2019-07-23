@@ -42,7 +42,8 @@ Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 	float t = 0;
 	for(auto& entity : _Entities)
 	{
-		t = entity->Intersect(ray);
+		auto temp = entity->Intersect(ray);
+		t  = temp.first;
 		if(t > 0 && t <= tMin)
 		{
 			int matId = entity->MaterialID();
@@ -51,7 +52,7 @@ Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 				mat = *std::find_if(_Materials.begin(), _Materials.end(), [matId](Material& y) -> bool { return y.ID == matId; })._Ptr;
 			}
 			tMin = t;
-			hitEntity = entity;
+			hitEntity = temp.second;
 		}
 	}
 
@@ -95,7 +96,7 @@ Vector3 Renderer::GetColor(Vector3 hitPoint, Vector3 normal, Material mat)
 		Ray shadowRay(hitPoint + lightDir * _Scene.ShadowRayEpsilon, lightDir);
 		for(auto& entity : _Entities)
 		{
-			if(entity->Intersect(shadowRay) > 0)
+			if(entity->Intersect(shadowRay).first > 0)
 			{
 				diff = Vector3();
 				spec = Vector3();

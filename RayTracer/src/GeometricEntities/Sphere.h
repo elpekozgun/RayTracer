@@ -22,7 +22,7 @@ public:
 	virtual eEntityType GetType() override;
 
 	//  IGeometricEntity
-	virtual float Intersect(Ray ray) override;
+	virtual std::pair<float, IGeometricEntity*> Intersect(Ray ray) override;
 	virtual Vector3 GetNormal(Vector3 point) override;
 	virtual int ID() override;
 	virtual int MaterialID() override;

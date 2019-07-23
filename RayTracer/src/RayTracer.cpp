@@ -12,6 +12,7 @@
 #include "GeometricEntities/Plane.h"
 #include "GeometricEntities/Mesh.h"
 #include "Entities/IEntity.h"
+#include "Core/KdNode.h"
 
 #include <stdlib.h>
 #include <crtdbg.h>
@@ -49,7 +50,7 @@ int main(int argc, char** argv)
 	Camera camera;
 	Scene scene;
 	
-	vector<vector<string>>output = Parser::Parse("res/input4.txt");
+	vector<vector<string>>output = Parser::Parse("res/input3.txt");
 	//vector<vector<string>>output = Parser::Parse(argv[1]);
 
 
@@ -131,10 +132,14 @@ int main(int argc, char** argv)
 		{
 			if(((Mesh*)entity)->GetType() == eEntityType::mesh)
 			{
-				for(auto& triangle : ((Mesh*)entity)->Triangles)
+				KdNode* node = new KdNode(((Mesh*)entity)->Triangles, ePartitionAxis::X);
+				node->materialId = entity->MaterialID();
+				GeometricEntities.push_back((IGeometricEntity*)node);
+
+				/*for(auto& triangle : ((Mesh*)entity)->Triangles)
 				{
-					GeometricEntities.push_back(new Triangle(triangle));
-				}
+					GeometricEntities.push_back(triangle);
+				}*/
 			}
 			else
 			{
@@ -142,6 +147,8 @@ int main(int argc, char** argv)
 			}
 		}
 	}
+
+
 
 #pragma endregion
 
