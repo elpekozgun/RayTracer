@@ -136,6 +136,7 @@
     <ClCompile Include="src\Entities\PointLight.cpp" />
     <ClCompile Include="src\Entities\Primitive.cpp" />
     <ClCompile Include="src\Entities\VertexList.cpp" />
+    <ClCompile Include="src\GeometricEntities\Box.cpp" />
     <ClCompile Include="src\GeometricEntities\IGeometricEntity.cpp" />
     <ClCompile Include="src\GeometricEntities\Mesh.cpp" />
     <ClCompile Include="src\GeometricEntities\Plane.cpp" />
@@ -157,6 +158,7 @@
     <ClInclude Include="src\Entities\PointLight.h" />
     <ClInclude Include="src\Entities\Primitive.h" />
     <ClInclude Include="src\Entities\VertexList.h" />
+    <ClInclude Include="src\GeometricEntities\Box.h" />
     <ClInclude Include="src\GeometricEntities\IGeometricEntity.h" />
     <ClInclude Include="src\GeometricEntities\Mesh.h" />
     <ClInclude Include="src\GeometricEntities\Plane.h" />

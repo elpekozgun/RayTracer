@@ -10,8 +10,11 @@ class Mesh : public IGeometricEntity , IEntity
 {
 public:
 
-
 	std::vector<Triangle*> Triangles;
+
+
+
+
 
 	Mesh();
 	Mesh(int id, int materialID);

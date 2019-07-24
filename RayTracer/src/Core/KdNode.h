@@ -4,7 +4,7 @@
 #include <vector>
 #include <algorithm>
 
-#include "..//GeometricEntities/Sphere.h"
+#include "..//GeometricEntities/Box.h"
 #include "..//GeometricEntities/Mesh.h"
 
 #include "Vector3.h"
@@ -26,7 +26,7 @@ public:
 
 	std::vector<Triangle*> Triangles;
 
-	Sphere BoundingSphere;
+	Box Boundingbox;
 	KdNode* Left;
 	KdNode* Right;
 
@@ -34,9 +34,9 @@ public:
 
 private:
 
-	Sphere CalculateBoundingSphere(std::vector<Triangle*> triangles);
-	void SortPoints(std::vector<Triangle*> triangles, ePartitionAxis axis);
-	ePartitionAxis nextAxis(ePartitionAxis axis);
+	Box CalculateBoundingBox(std::vector<Triangle*> triangles);
+	void SortPoints(std::vector<Triangle*>& triangles, ePartitionAxis axis);
+	ePartitionAxis NextAxis(ePartitionAxis axis);
 
 
 	// Inherited via IGeometricEntity

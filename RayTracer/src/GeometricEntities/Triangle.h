@@ -18,6 +18,7 @@ public:
 
 	Vector3 GetCenter();
 
+
 	// IEntity
 	virtual eEntityType GetType() override;
 
