@@ -16,7 +16,7 @@ enum class ePartitionAxis
 	Z = 2
 };
 
-class KdNode : IGeometricEntity
+class KdNode : IGeometricEntity , IEntity
 {
 public:
 	int materialId;
@@ -31,6 +31,8 @@ public:
 	KdNode* Right;
 
 	//KdNode* MakeKdTree(std::vector<Triangle*>, ePartitionAxis currentAxis);
+	virtual eEntityType GetType() override;
+	virtual std::pair<float, IGeometricEntity*> Intersect(Ray ray) override;
 
 private:
 
@@ -41,7 +43,6 @@ private:
 
 	// Inherited via IGeometricEntity
 	
-	virtual std::pair<float, IGeometricEntity*> Intersect(Ray ray) override;
 
 	virtual int ID() override;
 
@@ -51,6 +52,9 @@ private:
 
 
 	
+
+
+	// Inherited via IEntity
 
 };
 

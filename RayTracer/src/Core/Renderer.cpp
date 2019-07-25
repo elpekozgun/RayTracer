@@ -3,10 +3,10 @@
 
 Renderer::Renderer( Camera& camera, Scene& scene, std::vector<IGeometricEntity*> entities, std::vector<Material> materials)
 {
-	_Camera = camera;
-	_Scene = scene;
-	_Entities = entities;
-	_Materials = materials;
+_Camera = camera;
+_Scene = scene;
+_Entities = entities;
+_Materials = materials;
 }
 
 Renderer::~Renderer()
@@ -19,7 +19,7 @@ void Renderer::Render(std::vector<std::vector<Vector3>>& image)
 	{
 		for(unsigned int i = 0; i < _Camera.ScreenResolution.x; i++)
 		{
-			Ray ray(_Camera.Position, _Camera.GetScreenPixel(i, j).Normalized());
+			Ray ray(_Camera.Position, _Camera.GetScreenPixel(i, j));
 			image.at(j).at(i) = Trace
 			(
 				ray,
@@ -43,7 +43,7 @@ Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 	for(auto& entity : _Entities)
 	{
 		auto temp = entity->Intersect(ray);
-		t  = temp.first;
+		t = temp.first;
 		if(t > 0 && t <= tMin)
 		{
 			int matId = entity->MaterialID();
@@ -71,13 +71,13 @@ Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 
 		// TODO: REFRACTIVE PART
 
-		rayColor += GetColor(hitPoint, normal, mat);
+		rayColor += GetColor(hitEntity, hitPoint, normal, mat);
 	}
 
 	return rayColor;
 }
 
-Vector3 Renderer::GetColor(Vector3 hitPoint, Vector3 normal, Material mat)
+Vector3 Renderer::GetColor(IGeometricEntity* hitEntity, Vector3 hitPoint, Vector3 normal, Material mat)
 {
 	Vector3 color = _Scene.BackgroundColor;
 
@@ -94,14 +94,28 @@ Vector3 Renderer::GetColor(Vector3 hitPoint, Vector3 normal, Material mat)
 		Vector3	diff = light.Intensity * lambertian / (distance * distance);
 
 		Ray shadowRay(hitPoint + lightDir * _Scene.ShadowRayEpsilon, lightDir);
+
+		bool IsIntersected = false;
 		for(auto& entity : _Entities)
 		{
-			if(entity->Intersect(shadowRay).first > 0)
+			KdNode* node = (KdNode*)entity;
+
+			if(VisitTree(hitEntity, node, shadowRay))
 			{
 				diff = Vector3();
 				spec = Vector3();
 				break;
 			}
+
+			/*for(auto& triangle : node->Triangles)
+			{
+				if(triangle->Intersect(shadowRay).first > 0)
+				{
+					diff = Vector3();
+					spec = Vector3();
+					break;
+				}
+			}*/
 		}
 
 		color += mat.Diffuse * diff + mat.Specular * spec;
@@ -110,4 +124,31 @@ Vector3 Renderer::GetColor(Vector3 hitPoint, Vector3 normal, Material mat)
 	color += _Scene.AmbientLight * mat.Ambient;
 
 	return color;
+}
+
+// TODO
+bool Renderer::VisitTree(IGeometricEntity* hitEntity, KdNode* node, Ray shadowRay)
+{
+	bool var = false;
+	if(node->Right != NULL)
+	{
+		var = VisitTree(hitEntity, node->Right, shadowRay);
+	}
+	if(node->Left != NULL && !var)
+	{
+		return VisitTree(hitEntity, node->Left, shadowRay);
+	}
+	else
+	{
+		for(auto& Triangle : node->Triangles)
+		{
+			if(Triangle->Intersect(shadowRay).first > 0)
+			{
+				return true;
+			} 
+		}
+		return false;
+	}
+	return false;
+
 }

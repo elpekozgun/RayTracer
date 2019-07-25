@@ -15,7 +15,7 @@ Matrix3::Matrix3(float m11, float m12, float m13, float m21, float m22, float m2
 {
 	rows[0] = Vector3 { m11,m12,m13 };
 	rows[1] = Vector3 { m21,m22,m23 };
-	rows[2] = Vector3{ m31,m32,m33 };
+	rows[2] = Vector3 { m31,m32,m33 };
 
 }
 

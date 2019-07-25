@@ -8,7 +8,7 @@ KdNode::KdNode(std::vector<Triangle*>& triangles, ePartitionAxis currentAxis)
 	this->Triangles = triangles;
 	size_t half = triangles.size() >> 1;
 
-	if(triangles.size() > 1)
+	if(triangles.size() > 2)
 	{ 
 		std::vector<Triangle*> leftTris;
 		for(size_t i = 0; i < half; i++)
@@ -117,7 +117,7 @@ Box KdNode::CalculateBoundingBox(std::vector<Triangle*> triangles)
 		zMax = triBack->Vertices[2].Z;
 	}
 
-	return Box(Vector3(xMin,yMin,zMin), Vector3(xMax,yMax,zMax));
+	return Box(Vector3(xMin - 0.002f,yMin - 0.002f,zMin - 0.002f ), Vector3(xMax + 0.002f,yMax + 0.002f,zMax + 0.002f));
 }
 
 //Sphere KdNode::CalculateBoundingBox(std::vector<Triangle*> triangles)
@@ -156,7 +156,7 @@ void KdNode::SortPoints(std::vector<Triangle*>& triangles, ePartitionAxis axis)
 			std::sort(triangles.begin(), triangles.end(), [](Triangle* A, Triangle* B) { return A->GetCenter().Z < B->GetCenter().Z; });
 			break;
 		default:
-			std::sort(triangles.begin(), triangles.end(), [](Triangle* A, Triangle* B) { return A->GetCenter().X < B->GetCenter().X; });
+			std::sort(triangles.begin(), triangles.end(), [](Triangle* A, Triangle* B) { return A->GetCenter().X <= B->GetCenter().X; });
 			break;
 	}
 	
@@ -179,7 +179,7 @@ ePartitionAxis KdNode::NextAxis(ePartitionAxis axis)
 
 std::pair<float, IGeometricEntity*> KdNode::Intersect(Ray ray)
 {
-	Triangle* tri = nullptr;
+	Triangle* tri = NULL;
 	float tMin = INFINITY;
 
 	if(this->Boundingbox.Intersect(ray).first > 0)
@@ -207,30 +207,9 @@ std::pair<float, IGeometricEntity*> KdNode::Intersect(Ray ray)
 		{
 			return rightOutput;
 		}
-
-
-		//auto rightOutput = this->Right->Intersect(ray);
-
-		//if(leftOutput.first <= rightOutput.first && leftOutput.first > 0 )
-		//{
-		//	return leftOutput;
-		//}
-		//else
-		//{
-		//	return rightOutput;
-		//}
-		
-		//auto retVal = this->Left->Intersect(ray);
-
-		//if(retVal.second == nullptr)
-		//{
-		//	retVal = this->Right->Intersect(ray);
-		//}
-
-		//return retVal;
 	}
 
-	if(this->Left == NULL || this->Right == NULL)
+	if(this->Left == NULL && this->Right == NULL)
 	{
 		float t = 0;
 		for(auto& triangle : this->Triangles)
@@ -242,7 +221,11 @@ std::pair<float, IGeometricEntity*> KdNode::Intersect(Ray ray)
 				tri = triangle;
 			}
 		}
-		return std::pair<float, IGeometricEntity*>(t, tri);
+		if(tMin == INFINITY)
+		{
+			tMin = 0;
+		}
+		return std::pair<float, IGeometricEntity*>(tMin, tri);
 	}
 
 	return std::pair<float, IGeometricEntity*>(0, NULL);
@@ -251,6 +234,11 @@ std::pair<float, IGeometricEntity*> KdNode::Intersect(Ray ray)
 Vector3 KdNode::GetNormal(Vector3 point)
 {
 	return Vector3();
+}
+
+eEntityType KdNode::GetType()
+{
+	return eEntityType::mesh;
 }
 
 int KdNode::ID()

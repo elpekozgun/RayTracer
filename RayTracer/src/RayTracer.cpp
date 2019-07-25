@@ -135,11 +135,11 @@ int main(int argc, char** argv)
 				KdNode* node = new KdNode(((Mesh*)entity)->Triangles, ePartitionAxis::X);
 				node->materialId = entity->MaterialID();
 				GeometricEntities.push_back((IGeometricEntity*)node);
-
-				/*for(auto& triangle : ((Mesh*)entity)->Triangles)
-				{
-					GeometricEntities.push_back(triangle);
-				}*/
+				
+				//for(auto& triangle : ((Mesh*)entity)->Triangles)
+				//{
+				//	GeometricEntities.push_back(triangle);
+				//}
 			}
 			else
 			{

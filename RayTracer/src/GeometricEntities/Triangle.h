@@ -32,8 +32,6 @@ private:
 	int Id;
 	int MaterialId;
 	
-	bool OnTheSameSide(Vector3 p, Vector3 v1, Vector3 v2, Vector3 v0);
-	bool IsInsideTriangle(Vector3 p, Vector3 v1, Vector3 v2, Vector3 v0);
 };
 
 #endif 

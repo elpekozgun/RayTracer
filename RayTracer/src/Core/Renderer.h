@@ -9,8 +9,10 @@
 #include "..//Entities/Primitive.h"
 #include "..//Entities/VertexList.h"
 #include "..//GeometricEntities/IGeometricEntity.h"
+#include "..////GeometricEntities/Mesh.h"
 #include "Vector3.h"
 #include "Shader.h"
+
 
 class Renderer
 {
@@ -30,7 +32,8 @@ private:
 
 
 	Vector3 Trace(Ray& ray, int currentRecursion, bool includeAmbient);
-	Vector3 GetColor(Vector3 hitPoint, Vector3 normal, Material mat);
+	Vector3 GetColor(IGeometricEntity* hitEntity, Vector3 hitPoint, Vector3 normal, Material mat);
+	bool VisitTree(IGeometricEntity* hitEntity, KdNode* node, Ray shadowRay);
 };
 
 

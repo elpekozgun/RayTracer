@@ -63,7 +63,7 @@ std::pair<float, IGeometricEntity*> Triangle::Intersect(Ray ray)
 		Vector3(a.Z - o.Z, a.Z - c.Z, d.Z)
 	);
 	float beta = BetaMat.Determinant() / detA;
-	if(beta > 1 || beta < 0)
+	if(beta < 0 || beta > 1)
 	{
 		return std::pair<float, IGeometricEntity*>(0, nullptr);;
 	}
@@ -75,7 +75,7 @@ std::pair<float, IGeometricEntity*> Triangle::Intersect(Ray ray)
 		Vector3(a.Z - b.Z, a.Z - o.Z, d.Z)
 	);
 	float gamma = gammaMat.Determinant() / detA;
-	if(gamma > 1 || gamma < 0)
+	if(gamma < 0 || gamma > 1)
 	{
 		return std::pair<float, IGeometricEntity*>(0, nullptr);;
 	}
@@ -99,18 +99,6 @@ std::pair<float, IGeometricEntity*> Triangle::Intersect(Ray ray)
 eEntityType Triangle::GetType()
 {
 	return eEntityType::triangle;
-}
-
-bool Triangle::OnTheSameSide(Vector3 p, Vector3 v1, Vector3 v2, Vector3 v0)
-{
-	auto cp1 = (p - v0).CrossProduct(v2 - v0);
-	auto cp2 = (v1 - v0).CrossProduct(v2 - v0);
-	return cp1.DotProduct(cp2) > 0;
-}
-
-bool Triangle::IsInsideTriangle(Vector3 p, Vector3 v1, Vector3 v2, Vector3 v0)
-{
-	return OnTheSameSide(p, v1, v2, v0) && OnTheSameSide(p, v2, v1, v0) && OnTheSameSide(p, v0 , v1, v2);
 }
 
 int Triangle::ID()
