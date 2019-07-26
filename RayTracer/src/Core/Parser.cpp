@@ -147,6 +147,8 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 			mesh->Triangles.push_back(triangle);
 		}
 
+		//TODO Add kdNode* stuff to mesh.
+
 		return mesh;
 
 	}
@@ -180,7 +182,6 @@ void Parser::GeneratePPMfile(unsigned int width, unsigned int height, std::vecto
 	std::cout << "time elapsed: " << seconds.count() << "seconds" << std::endl;
 
 }
-
 
 std::vector<std::vector<std::string>> Parser::Parse(std::string path)
 {

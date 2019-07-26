@@ -63,7 +63,7 @@ std::pair<float, IGeometricEntity*> Triangle::Intersect(Ray ray)
 		Vector3(a.Z - o.Z, a.Z - c.Z, d.Z)
 	);
 	float beta = BetaMat.Determinant() / detA;
-	if(beta < 0 || beta > 1)
+	if(beta < -0.0000001f || beta > 0.99999999f)
 	{
 		return std::pair<float, IGeometricEntity*>(0, nullptr);;
 	}
@@ -75,7 +75,7 @@ std::pair<float, IGeometricEntity*> Triangle::Intersect(Ray ray)
 		Vector3(a.Z - b.Z, a.Z - o.Z, d.Z)
 	);
 	float gamma = gammaMat.Determinant() / detA;
-	if(gamma < 0 || gamma > 1)
+	if(gamma < -0.0000001f || gamma > 0.99999999f)
 	{
 		return std::pair<float, IGeometricEntity*>(0, nullptr);;
 	}

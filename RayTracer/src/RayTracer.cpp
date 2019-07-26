@@ -6,7 +6,6 @@
 
 #include "Core/Parser.h"
 #include "Core/Ray.h"
-#include "Core/Shader.h"
 #include "Core/Renderer.h"
 #include "GeometricEntities/Sphere.h"
 #include "GeometricEntities/Plane.h"
@@ -14,10 +13,10 @@
 #include "Entities/IEntity.h"
 #include "Core/KdNode.h"
 
-#include <stdlib.h>
-#include <crtdbg.h>
-
-#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
+//
+//#define _CRTDBG_MAP_ALLOC
 
 using namespace std;
 
@@ -35,7 +34,6 @@ inline void EraseFromVector(vector<T*>& Entities, T* entity)
 	std::vector<T*>::iterator itr = std::find(Entities.begin(), Entities.end(), entity);
 	Entities.erase(itr);
 }
-
 
 int main(int argc, char** argv)
 {
@@ -93,14 +91,14 @@ int main(int argc, char** argv)
 			scene.ShadowRayEpsilon = (dynamic_cast<ShadowRayEpsilon*>(entity))->ShadowRayEpsilonValue;
 			DeleteItemAndEraseFromVector(Entities, entity);
 		}
-		else if(entity->GetType() == eEntityType::material)
-		{
-			materials.push_back(*dynamic_cast<Material*>(entity));
-			DeleteItemAndEraseFromVector(Entities, entity);
-		}
 		else if(entity->GetType() == eEntityType::pointlight)
 		{
 			scene.PointLights.push_back(*dynamic_cast<PointLight*>(entity));
+			DeleteItemAndEraseFromVector(Entities, entity);
+		}
+		else if(entity->GetType() == eEntityType::material)
+		{
+			materials.push_back(*dynamic_cast<Material*>(entity));
 			DeleteItemAndEraseFromVector(Entities, entity);
 		}
 		else if(entity->GetType() == eEntityType::vertexlist)
@@ -135,11 +133,6 @@ int main(int argc, char** argv)
 				KdNode* node = new KdNode(((Mesh*)entity)->Triangles, ePartitionAxis::X);
 				node->materialId = entity->MaterialID();
 				GeometricEntities.push_back((IGeometricEntity*)node);
-				
-				//for(auto& triangle : ((Mesh*)entity)->Triangles)
-				//{
-				//	GeometricEntities.push_back(triangle);
-				//}
 			}
 			else
 			{
@@ -173,7 +166,7 @@ int main(int argc, char** argv)
 		delete entity;
 	}
 
-	_CrtDumpMemoryLeaks();
+	//_CrtDumpMemoryLeaks();
 
 #pragma endregion
 

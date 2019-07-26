@@ -10,7 +10,6 @@ public:
 
 	Vector3 Center;
 	float Radius;
-	Material* Material;
 
 	
 	Sphere();

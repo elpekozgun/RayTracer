@@ -64,7 +64,7 @@ Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 		// REFLECTION PART
 		if(currentRecursion < _Scene.RecursionDepth && mat.MirrorReflectance != Vector3::Zero())
 		{
-			Vector3 reflectDir = Shader::Reflect(-ray.direction.Normalized(), normal);
+			Vector3 reflectDir = Reflect(-ray.direction.Normalized(), normal);
 			Ray reflectRay(hitPoint + reflectDir * _Scene.ShadowRayEpsilon, reflectDir);
 			rayColor += Trace(reflectRay, currentRecursion++, false) * mat.MirrorReflectance;
 		}
@@ -94,28 +94,19 @@ Vector3 Renderer::GetColor(IGeometricEntity* hitEntity, Vector3 hitPoint, Vector
 		Vector3	diff = light.Intensity * lambertian / (distance * distance);
 
 		Ray shadowRay(hitPoint + lightDir * _Scene.ShadowRayEpsilon, lightDir);
+		Ray negativeShadowRay(light.Position, -lightDir);
 
 		bool IsIntersected = false;
 		for(auto& entity : _Entities)
 		{
-			KdNode* node = (KdNode*)entity;
+			auto retVal = entity->Intersect(shadowRay);
 
-			if(VisitTree(hitEntity, node, shadowRay))
+			if(retVal.first > 0 && retVal.second != hitEntity)
 			{
 				diff = Vector3();
 				spec = Vector3();
 				break;
 			}
-
-			/*for(auto& triangle : node->Triangles)
-			{
-				if(triangle->Intersect(shadowRay).first > 0)
-				{
-					diff = Vector3();
-					spec = Vector3();
-					break;
-				}
-			}*/
 		}
 
 		color += mat.Diffuse * diff + mat.Specular * spec;
@@ -126,29 +117,7 @@ Vector3 Renderer::GetColor(IGeometricEntity* hitEntity, Vector3 hitPoint, Vector
 	return color;
 }
 
-// TODO
-bool Renderer::VisitTree(IGeometricEntity* hitEntity, KdNode* node, Ray shadowRay)
+Vector3 Renderer::Reflect(Vector3 lightDirection, Vector3 normal)
 {
-	bool var = false;
-	if(node->Right != NULL)
-	{
-		var = VisitTree(hitEntity, node->Right, shadowRay);
-	}
-	if(node->Left != NULL && !var)
-	{
-		return VisitTree(hitEntity, node->Left, shadowRay);
-	}
-	else
-	{
-		for(auto& Triangle : node->Triangles)
-		{
-			if(Triangle->Intersect(shadowRay).first > 0)
-			{
-				return true;
-			} 
-		}
-		return false;
-	}
-	return false;
-
+	return -lightDirection + normal * normal.DotProductNormalized(lightDirection) * 2.0f;
 }
