@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\RayTracer.cpp">
+    <ClCompile Include="src\Raytracer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GeometricEntities\Mesh.cpp">
@@ -64,9 +64,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Core\Renderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Core\KdNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\GeometricEntities\Box.cpp">
@@ -120,9 +117,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Core\Renderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Core\KdNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\GeometricEntities\Box.h">

@@ -2,6 +2,8 @@
 
 Box::Box()
 {
+	Id = -1;
+	MaterialId = -1;
 }
 
 Box::Box(const Vector3 vMin, const Vector3 vMax)
@@ -14,7 +16,15 @@ Box::Box(const Vector3 vMin, const Vector3 vMax)
 
 Box::~Box()
 {
-	//std::cout << "Bounding box : " << ID() << " deleted";
+	//std::cout << "Bounding box : " << ID() << " deleted \n";
+}
+
+bool Box::isPointInside(Vector3 point)
+{
+	return	point.X <= bounds[1].X && point.X >= bounds[0].X &&
+			point.Y <= bounds[1].Y && point.Y >= bounds[0].Y &&
+			point.Z <= bounds[1].Z && point.Z >= bounds[0].Z;
+
 }
 
 std::pair<float, IGeometricEntity*> Box::Intersect(Ray ray)

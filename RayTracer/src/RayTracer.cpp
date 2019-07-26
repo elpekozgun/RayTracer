@@ -11,7 +11,6 @@
 #include "GeometricEntities/Plane.h"
 #include "GeometricEntities/Mesh.h"
 #include "Entities/IEntity.h"
-#include "Core/KdNode.h"
 
 //#include <stdlib.h>
 //#include <crtdbg.h>
@@ -48,9 +47,15 @@ int main(int argc, char** argv)
 	Camera camera;
 	Scene scene;
 	
-	vector<vector<string>>output = Parser::Parse("res/input3.txt");
-	//vector<vector<string>>output = Parser::Parse(argv[1]);
-
+	vector<vector<string>>output;
+	if(argc < 2)
+	{
+		output = Parser::Parse("res/input3.txt");
+	}
+	else
+	{
+		output = Parser::Parse(argv[1]);
+	}
 
 	// Parse Input Text
 	for(unsigned int i = 0; i < output.size(); i++)
@@ -117,7 +122,7 @@ int main(int argc, char** argv)
 		}
 	}
 
-	Image.resize((int)camera.ScreenResolution.x, std::vector<Vector3>((int)camera.ScreenResolution.y));
+	Image.resize((int)camera.ScreenResolution.y, std::vector<Vector3>((int)camera.ScreenResolution.x));
 	
 #pragma endregion
 
@@ -128,20 +133,9 @@ int main(int argc, char** argv)
 		auto entity = Parser::GenerateGeometricEntity(list, vertexList);
 		if(entity)
 		{
-			if(((Mesh*)entity)->GetType() == eEntityType::mesh)
-			{
-				KdNode* node = new KdNode(((Mesh*)entity)->Triangles, ePartitionAxis::X);
-				node->materialId = entity->MaterialID();
-				GeometricEntities.push_back((IGeometricEntity*)node);
-			}
-			else
-			{
-				GeometricEntities.push_back(entity);
-			}
+			GeometricEntities.push_back(entity);
 		}
 	}
-
-
 
 #pragma endregion
 
@@ -166,12 +160,12 @@ int main(int argc, char** argv)
 		delete entity;
 	}
 
+	return 0;
+	
 	//_CrtDumpMemoryLeaks();
 
 #pragma endregion
 
-
-	return 0;
 };
 
 

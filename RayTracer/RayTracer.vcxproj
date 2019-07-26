@@ -21,8 +21,9 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{43580A57-3575-4B58-89BF-37539C70BDAE}</ProjectGuid>
-    <RootNamespace>RayTracer</RootNamespace>
+    <RootNamespace>Raytracer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Raytracer</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -123,7 +124,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Core\KdNode.cpp" />
     <ClCompile Include="src\Core\Matrix3.cpp" />
     <ClCompile Include="src\Core\Parser.cpp" />
     <ClCompile Include="src\Core\Ray.cpp" />
@@ -141,10 +141,9 @@
     <ClCompile Include="src\GeometricEntities\Plane.cpp" />
     <ClCompile Include="src\GeometricEntities\Sphere.cpp" />
     <ClCompile Include="src\GeometricEntities\Triangle.cpp" />
-    <ClCompile Include="src\RayTracer.cpp" />
+    <ClCompile Include="src\Raytracer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Core\KdNode.h" />
     <ClInclude Include="src\Core\Matrix3.h" />
     <ClInclude Include="src\Core\Parser.h" />
     <ClInclude Include="src\Core\Ray.h" />

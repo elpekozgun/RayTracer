@@ -34,7 +34,7 @@ std::pair<float, IGeometricEntity*> Sphere::Intersect(Ray ray)
 
 	if(do_c > 0)
 	{
-		return std::pair<float, IGeometricEntity*>(0, nullptr);;
+		return std::pair<float, IGeometricEntity*>(0, NULL);;
 	}
 	float t1 = (-do_c + sqrt(powf(do_c, 2.0f) - dd * (o_c.DotProduct(o_c) - Radius * Radius))) / dd;
 	float t2 = (-do_c - sqrt(powf(do_c, 2.0f) - dd * (o_c.DotProduct(o_c) - Radius * Radius))) / dd;

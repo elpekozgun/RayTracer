@@ -83,7 +83,7 @@ IEntity* Parser::GenerateEntity(std::vector<std::string> list)
 	}
 
 
-	return nullptr;
+	return NULL;
 }
 
 IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list, VertexList& vertexList)
@@ -123,12 +123,7 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 	}
 	else if( heading == MESH )
 	{
-		Mesh* mesh = new Mesh
-		(
-			ToInt(list[1]),
-			ToInt(list[2])
-		);
-
+		std::vector<Triangle*> triangles;
 		for( unsigned int i = 3; i < list.size(); i++ )
 		{
 			Vector3 vertices = ToVector3(list[i]);
@@ -141,19 +136,25 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 			Triangle* triangle = new Triangle
 			(
 				-1, 
-				mesh->MaterialID(), 
+				ToInt(list[2]),
 				triangleVertices
 			);
-			mesh->Triangles.push_back(triangle);
+			triangles.push_back(triangle);
 		}
 
-		//TODO Add kdNode* stuff to mesh.
+		Mesh* mesh = new Mesh
+		(
+			ToInt(list[1]),
+			ToInt(list[2]),
+			triangles,
+			ePartitionAxis::X
+		);
+
 
 		return mesh;
-
 	}
 
-	return nullptr;
+	return NULL;
 }
 
 void Parser::GeneratePPMfile(unsigned int width, unsigned int height, std::vector<std::vector<Vector3>> colorData)

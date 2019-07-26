@@ -14,6 +14,8 @@ public:
 	~Box();
 
 
+	bool isPointInside(Vector3 point);
+
 	virtual std::pair<float, IGeometricEntity*> Intersect(Ray ray) override;
 	virtual Vector3 GetNormal(Vector3 point) override;
 	virtual int ID() override;

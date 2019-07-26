@@ -15,9 +15,9 @@ Renderer::~Renderer()
 
 void Renderer::Render(std::vector<std::vector<Vector3>>& image)
 {
-	for(unsigned int j = 0; j < _Camera.ScreenResolution.y; j++)
+	for(unsigned int j = 0; j < (unsigned int)_Camera.ScreenResolution.y; j++)
 	{
-		for(unsigned int i = 0; i < _Camera.ScreenResolution.x; i++)
+		for(unsigned int i = 0; i < (unsigned int)_Camera.ScreenResolution.x; i++)
 		{
 			Ray ray(_Camera.Position, _Camera.GetScreenPixel(i, j));
 			image.at(j).at(i) = Trace
@@ -94,13 +94,11 @@ Vector3 Renderer::GetColor(IGeometricEntity* hitEntity, Vector3 hitPoint, Vector
 		Vector3	diff = light.Intensity * lambertian / (distance * distance);
 
 		Ray shadowRay(hitPoint + lightDir * _Scene.ShadowRayEpsilon, lightDir);
-		Ray negativeShadowRay(light.Position, -lightDir);
 
-		bool IsIntersected = false;
+		// Shadows
 		for(auto& entity : _Entities)
 		{
 			auto retVal = entity->Intersect(shadowRay);
-
 			if(retVal.first > 0 && retVal.second != hitEntity)
 			{
 				diff = Vector3();

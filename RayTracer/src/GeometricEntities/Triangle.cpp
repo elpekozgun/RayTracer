@@ -65,7 +65,7 @@ std::pair<float, IGeometricEntity*> Triangle::Intersect(Ray ray)
 	float beta = BetaMat.Determinant() / detA;
 	if(beta < -0.0000001f || beta > 0.99999999f)
 	{
-		return std::pair<float, IGeometricEntity*>(0, nullptr);;
+		return std::pair<float, IGeometricEntity*>(0, NULL);;
 	}
 
 	auto gammaMat = Matrix3
@@ -77,7 +77,7 @@ std::pair<float, IGeometricEntity*> Triangle::Intersect(Ray ray)
 	float gamma = gammaMat.Determinant() / detA;
 	if(gamma < -0.0000001f || gamma > 0.99999999f)
 	{
-		return std::pair<float, IGeometricEntity*>(0, nullptr);;
+		return std::pair<float, IGeometricEntity*>(0, NULL);;
 	}
 
 	auto tMat = Matrix3
@@ -93,7 +93,7 @@ std::pair<float, IGeometricEntity*> Triangle::Intersect(Ray ray)
 		return std::pair<float, IGeometricEntity*>(t,this);
 	}
 
-	return std::pair<float, IGeometricEntity*>(0, nullptr);;
+	return std::pair<float, IGeometricEntity*>(0, NULL);;
 }
 
 eEntityType Triangle::GetType()
