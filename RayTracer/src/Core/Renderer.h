@@ -31,8 +31,10 @@ private:
 
 
 	Vector3 Trace(Ray& ray, int currentRecursion, bool includeAmbient);
-	Vector3 GetColor(IGeometricEntity* hitEntity, Vector3 hitPoint, Vector3 normal, Material mat);
+	Vector3 GetColor(const IGeometricEntity* hitEntity, Vector3& hitPoint, Vector3& normal, const Material& mat);
 	Vector3 Reflect(Vector3 lightDirection, Vector3 normal);
+	Vector3 Refract(Vector3 incident, Vector3 normal, float refractiveIndex);
+	float Fresnel(Vector3 incident, Vector3 normal, float refractiveIndex);
 };
 
 

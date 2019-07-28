@@ -58,6 +58,10 @@ IEntity* Parser::GenerateEntity(std::vector<std::string> list)
 		material->Specular = ToVector3(list[4]);
 		material->PhongExponent = ToFloat(list[5]);
 		material->MirrorReflectance = ToVector3(list[6]);
+		if(list.size() > 7)
+		{
+			material->Refraction = ToFloat(list[7]);
+		}
 
 		return material;
 	}

@@ -11,8 +11,9 @@ public:
 	Vector3 Ambient;
 	Vector3 Diffuse;
 	Vector3 Specular;
-	float PhongExponent;
 	Vector3 MirrorReflectance;
+	float PhongExponent;
+	float Refraction;
 
 	Material();
 	~Material();

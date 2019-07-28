@@ -1,5 +1,5 @@
 #include "Renderer.h"
-
+#include <cmath>
 
 Renderer::Renderer( Camera& camera, Scene& scene, std::vector<IGeometricEntity*> entities, std::vector<Material> materials)
 {
@@ -58,28 +58,50 @@ Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 
 	if(hitEntity != NULL)
 	{
+		rayColor = Vector3::Zero();
 		Vector3 hitPoint = ray.origin + ray.direction * tMin;
 		Vector3 normal = hitEntity->GetNormal(hitPoint);
+		Vector3 reflectionColor = Vector3::Zero();
+		Vector3 refractionColor = Vector3::Zero();
 
-		// REFLECTION PART
+
+		// REFLECTION and REFRACTION
 		if(currentRecursion < _Scene.RecursionDepth && mat.MirrorReflectance != Vector3::Zero())
-		{
+		{			
 			Vector3 reflectDir = Reflect(-ray.direction.Normalized(), normal);
 			Ray reflectRay(hitPoint + reflectDir * _Scene.ShadowRayEpsilon, reflectDir);
-			rayColor += Trace(reflectRay, currentRecursion++, false) * mat.MirrorReflectance;
+			reflectionColor = Trace(reflectRay, ++currentRecursion, false) * mat.MirrorReflectance;
+
+			float kr = Fresnel(ray.direction.Normalized(), normal, mat.Refraction);
+			float kt = 1 - kr;
+			bool outside = ray.direction.DotProductNormalized(normal) < 0;
+			if(kr < 1)
+			{
+				Vector3 refractionDirection = Refract(ray.direction.Normalized(), normal, mat.Refraction);
+				Vector3 refractionOrigin = outside ? hitPoint - normal * _Scene.ShadowRayEpsilon : hitPoint + normal * _Scene.ShadowRayEpsilon;
+				Ray refractionRay = Ray(refractionOrigin, refractionDirection.Normalized());
+				refractionColor = Trace(refractionRay, currentRecursion, false);
+			}
+
+			rayColor += (refractionColor * kt + reflectionColor * kr);
+
 		}
 
-		// TODO: REFRACTIVE PART
 
 		rayColor += GetColor(hitEntity, hitPoint, normal, mat);
+
+		if(includeAmbient)
+		{
+			rayColor += _Scene.AmbientLight * mat.Ambient ;
+		}
 	}
 
 	return rayColor;
 }
 
-Vector3 Renderer::GetColor(IGeometricEntity* hitEntity, Vector3 hitPoint, Vector3 normal, Material mat)
+Vector3 Renderer::GetColor(const IGeometricEntity* hitEntity, Vector3& hitPoint, Vector3& normal, const Material& mat)
 {
-	Vector3 color = _Scene.BackgroundColor;
+	Vector3 color;
 
 	for(auto& light : _Scene.PointLights)
 	{
@@ -110,7 +132,7 @@ Vector3 Renderer::GetColor(IGeometricEntity* hitEntity, Vector3 hitPoint, Vector
 		color += mat.Diffuse * diff + mat.Specular * spec;
 	}
 
-	color += _Scene.AmbientLight * mat.Ambient;
+	/*color += _Scene.AmbientLight * mat.Ambient;*/
 
 	return color;
 }
@@ -119,3 +141,53 @@ Vector3 Renderer::Reflect(Vector3 lightDirection, Vector3 normal)
 {
 	return -lightDirection + normal * normal.DotProductNormalized(lightDirection) * 2.0f;
 }
+
+Vector3 Renderer::Refract(Vector3 incident, Vector3 normal, float refractiveIndex)
+{
+
+	auto cosI = incident.Normalized().DotProduct(normal);
+	float etaI = 1;
+	float etaT = refractiveIndex;
+	Vector3 n = normal;
+	if(cosI < 0)
+	{
+		cosI = -cosI;
+	}
+	else
+	{
+		std::swap(etaI, etaT);
+		n = -normal;
+	}
+	float eta = etaI / etaT;
+
+	float k = 1 - eta * eta * (1 - cosI * cosI);
+	return k < 0 ? Vector3::Zero() : incident.Normalized() * eta + n * (eta * cosI - sqrtf(k));
+}
+
+float Renderer::Fresnel(Vector3 incident, Vector3 normal, float refractiveIndex)
+{
+
+	auto cosI = incident.Normalized().DotProduct(normal);
+	float kr = 0;
+	float etaI = 1;
+	float etaT = refractiveIndex;
+	if(cosI > 0)
+	{
+		std::swap(etaI, etaT);
+	}
+	float sinT = etaI / etaT * sqrtf(std::max(0.0f, 1 - cosI * cosI));
+	if(sinT >= 1)
+	{
+		kr = 1;
+	}
+	else
+	{
+		float cosT = sqrtf(std::max(0.0f, 1 - sinT *sinT));
+		cosI = fabsf(cosI);
+		float Rs = ((etaT * cosI) - (etaI * cosT)) / ((etaT * cosI) + (etaI * cosT));
+		float Rp = ((etaI * cosI) - (etaT * cosT)) / ((etaI * cosI) + (etaT * cosT));
+		kr	= (Rs * Rs + Rp * Rp) * 0.5f;
+	}
+	return kr;
+}
+

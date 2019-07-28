@@ -3,11 +3,12 @@
 Material::Material()
 {
 	ID = -1;
-	Ambient = Vector3();
-	Diffuse = Vector3();
-	Specular = Vector3();
-	PhongExponent = 0;
-	MirrorReflectance = Vector3();
+	Ambient = Vector3::Zero();
+	Diffuse = Vector3::Zero();
+	Specular = Vector3::Zero();
+	PhongExponent = 0.0f;
+	MirrorReflectance = Vector3::Zero();
+	Refraction = 0.0f;
 }
 
 Material::~Material()
