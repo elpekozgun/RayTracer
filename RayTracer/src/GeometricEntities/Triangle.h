@@ -15,6 +15,8 @@ public:
 	Triangle(int id, int materialId, Vector3 vertices[3]);
 	~Triangle();
 
+	vector<Triangle*> neighbors;
+
 
 	Vector3 GetCenter();
 

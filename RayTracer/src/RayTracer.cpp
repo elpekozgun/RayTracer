@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 	vector<vector<string>>output;
 	if(argc < 2)
 	{
-		output = Parser::Parse("res/input5.txt");
+		output = Parser::Parse("res/input3.txt");
 	}
 	else
 	{
