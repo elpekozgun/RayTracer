@@ -1,3 +1,5 @@
+// RAY TRACER - OZGUN ELPEK
+
 #include <iostream>
 #include <vector>
 #include <algorithm>
@@ -11,11 +13,6 @@
 #include "GeometricEntities/Plane.h"
 #include "GeometricEntities/Mesh.h"
 #include "Entities/IEntity.h"
-
-//#include <stdlib.h>
-//#include <crtdbg.h>
-//
-//#define _CRTDBG_MAP_ALLOC
 
 using namespace std;
 
@@ -36,6 +33,11 @@ inline void EraseFromVector(vector<T*>& Entities, T* entity)
 
 int main(int argc, char** argv)
 {
+
+#ifdef _DEBUG
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+#endif
+
 	auto start = chrono::high_resolution_clock::now();
 
 	vector<IEntity*> Entities;
@@ -46,15 +48,20 @@ int main(int argc, char** argv)
 	VertexList vertexList;
 	Camera camera;
 	Scene scene;
-	
+	string fileName;
 	vector<vector<string>>output;
+
 	if(argc < 2)
 	{
 		output = Parser::Parse("res/input3.txt");
+		fileName = "input3.ppm";
 	}
 	else
 	{
 		output = Parser::Parse(argv[1]);
+		const char* asd = argv[1];
+		string raw(argv[1]);
+		fileName = raw.substr(0, raw.find(".txt")) + ".ppm";
 	}
 
 	// Parse Input Text
@@ -128,12 +135,15 @@ int main(int argc, char** argv)
 
 #pragma region Geometric Entities
 
-	for(auto& list : output)
+	for(unsigned int i = 0; i < output.size(); i++)
 	{
+		auto list = output.at(i);
 		auto entity = Parser::GenerateGeometricEntity(list, vertexList);
 		if(entity)
 		{
 			GeometricEntities.push_back(entity);
+			output.erase(find(output.begin(), output.end(), list));
+			i--;
 		}
 	}
 
@@ -146,15 +156,11 @@ int main(int argc, char** argv)
 	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
 	std::cout << "time elapsed: " << seconds.count() << "seconds" << endl;
 
-	Parser::GeneratePPMfile((int)camera.ScreenResolution.x, (int)camera.ScreenResolution.y, Image);
+	Parser::GeneratePPMfile(fileName,(int)camera.ScreenResolution.x, (int)camera.ScreenResolution.y, Image);
+
 
 #pragma region Dispose
 
-
-	for (IEntity* entity : Entities)
-	{
-		delete entity;
-	}
 	for( IGeometricEntity* entity : GeometricEntities )
 	{
 		delete entity;
@@ -162,7 +168,6 @@ int main(int argc, char** argv)
 
 	return 0;
 	
-	//_CrtDumpMemoryLeaks();
 
 #pragma endregion
 

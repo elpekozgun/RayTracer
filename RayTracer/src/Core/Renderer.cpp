@@ -15,6 +15,9 @@ Renderer::~Renderer()
 
 void Renderer::Render(std::vector<std::vector<Vector3>>& image)
 {
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
 	for(unsigned int j = 0; j < (unsigned int)_Camera.ScreenResolution.y; j++)
 	{
 		for(unsigned int i = 0; i < (unsigned int)_Camera.ScreenResolution.x; i++)
@@ -37,7 +40,6 @@ Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 	Vector3 rayColor = _Scene.BackgroundColor;
 	IGeometricEntity* hitEntity = NULL;
 	Material mat;
-
 
 	float t = 0;
 	for(auto& entity : _Entities)
@@ -87,7 +89,6 @@ Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 
 		}
 
-
 		rayColor += GetColor(hitEntity, hitPoint, normal, mat);
 
 		if(includeAmbient)
@@ -132,7 +133,6 @@ Vector3 Renderer::GetColor(const IGeometricEntity* hitEntity, Vector3& hitPoint,
 		color += mat.Diffuse * diff + mat.Specular * spec;
 	}
 
-	/*color += _Scene.AmbientLight * mat.Ambient;*/
 
 	return color;
 }

@@ -30,7 +30,7 @@ Camera::Camera(Vector3 position, Vector3 gaze, Vector3 up, Vector4 nearPlane, fl
 
 Camera::~Camera()
 {
-	std::cout << "Camera Destroyed" << std::endl;
+	//std::cout << "Camera Destroyed" << std::endl;
 }
 
 eEntityType Camera::GetType()

@@ -47,10 +47,18 @@ Mesh::Mesh(int id, int materialID, std::vector<Triangle*>& triangles, ePartition
 
 Mesh::~Mesh()
 {
-	// TODO: Implement proper delete mechanism.
-	 //std::cout << "mesh deleted" << std::endl;
-	 delete Right;
-	 delete Left;
+	if(Right != NULL && Left != NULL)
+	{
+		delete Right;	
+		delete Left;
+	}
+	else
+	{
+		for(auto& tri : Triangles)
+		{
+			delete tri;
+		}
+	}
 }
 
 std::pair<float, IGeometricEntity*> Mesh::Intersect(Ray ray)

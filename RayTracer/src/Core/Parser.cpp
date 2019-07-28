@@ -161,9 +161,10 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 	return NULL;
 }
 
-void Parser::GeneratePPMfile(unsigned int width, unsigned int height, std::vector<std::vector<Vector3>> colorData)
+void Parser::GeneratePPMfile(std::string fileName, unsigned int width, unsigned int height, std::vector<std::vector<Vector3>> colorData)
 {
-	std::ofstream outfile("test.ppm");
+	//std::ofstream outfile("test.ppm");
+	std::ofstream outfile(fileName);
 
 	auto start = std::chrono::high_resolution_clock::now();
 
@@ -171,6 +172,7 @@ void Parser::GeneratePPMfile(unsigned int width, unsigned int height, std::vecto
 	outfile << "P3" << std::endl;
 	outfile << width << " " << height << std::endl;
 	outfile << 255 << std::endl;
+
 
 	for(unsigned int j = 0; j < height; j++)
 	{
@@ -260,7 +262,7 @@ Vector3 Parser::ToVector3(std::string line)
 
 	while( std::getline(iss,token,' '))
 	{
-		if( token.empty() != true )
+		if( token.empty() != true && i < 3)
 		{
 			values[i++] = (float)atof(token.c_str());
 		}

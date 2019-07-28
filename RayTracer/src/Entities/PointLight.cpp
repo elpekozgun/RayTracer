@@ -9,7 +9,7 @@ PointLight::PointLight()
 
 PointLight::~PointLight()
 {
-	std::cout << "Point light " << ID << " deleted" << std::endl;
+	//std::cout << "Point light " << ID << " deleted" << std::endl;
 }
 
 eEntityType PointLight::GetType()
