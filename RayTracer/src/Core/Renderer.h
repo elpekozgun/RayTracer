@@ -4,8 +4,8 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <chrono>
 #include <omp.h>
-
 
 #include "..//Entities/Camera.h"
 #include "..//Entities/Material.h"

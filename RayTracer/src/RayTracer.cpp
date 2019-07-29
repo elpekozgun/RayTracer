@@ -38,6 +38,8 @@ int main(int argc, char** argv)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
+#pragma region Scene Genearation
+
 	auto start = chrono::high_resolution_clock::now();
 
 	vector<IEntity*> Entities;
@@ -64,6 +66,7 @@ int main(int argc, char** argv)
 		fileName = raw.substr(0, raw.find(".txt")) + ".ppm";
 	}
 
+
 	// Parse Input Text
 	for(unsigned int i = 0; i < output.size(); i++)
 	{
@@ -77,7 +80,6 @@ int main(int argc, char** argv)
 		}
 	}
 
-#pragma region Entities
 
 	// Entities
 	for(unsigned int i = 0; i < Entities.size(); i)
@@ -131,9 +133,7 @@ int main(int argc, char** argv)
 
 	Image.resize((int)camera.ScreenResolution.y, std::vector<Vector3>((int)camera.ScreenResolution.x));
 	
-#pragma endregion
 
-#pragma region Geometric Entities
 
 	for(unsigned int i = 0; i < output.size(); i++)
 	{
@@ -147,16 +147,20 @@ int main(int argc, char** argv)
 		}
 	}
 
+	auto finish = chrono::high_resolution_clock::now();
+	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
+	std::cout << "\nScene generated in: " << seconds.count() << "seconds" << endl;
+
 #pragma endregion
+
+#pragma region Rendering
 
 	auto renderer = Renderer(camera, scene, GeometricEntities, materials);
 	renderer.Render(Image);
 
-	auto finish = chrono::high_resolution_clock::now();
-	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
-	std::cout << "\nRender Finished in: " << seconds.count() << "seconds" << endl;
+#pragma endregion
 
-	//Parser::GeneratePPMfileRaw(fileName, (int)camera.ScreenResolution.x, (int)camera.ScreenResolution.y, Image);
+
 	Parser::GeneratePPMfileBinary(fileName,(int)camera.ScreenResolution.x, (int)camera.ScreenResolution.y, Image);
 
 

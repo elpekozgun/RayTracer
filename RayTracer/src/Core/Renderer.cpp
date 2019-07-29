@@ -14,6 +14,8 @@ Renderer::~Renderer()
 
 void Renderer::Render(std::vector<std::vector<Vector3>>& image)
 {
+	auto start = std::chrono::high_resolution_clock::now();
+
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
@@ -30,6 +32,11 @@ void Renderer::Render(std::vector<std::vector<Vector3>>& image)
 			);
 		}
 	}
+
+	auto finish = std::chrono::high_resolution_clock::now();
+	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
+	std::cout << "\nRendering finished in: " << seconds.count() << "seconds" << std::endl;
+
 }
 
 Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
