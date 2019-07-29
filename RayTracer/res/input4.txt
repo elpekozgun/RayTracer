@@ -2,7 +2,7 @@
 0 0 0
 
 #MaxRecursionDepth
-1
+3
 
 #ShadowRayEpsilon
 1e-3

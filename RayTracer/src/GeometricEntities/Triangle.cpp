@@ -17,6 +17,7 @@ Triangle::Triangle(int id, int materialId, Vector3 vertices[3])
 	Vertices[0] = vertices[0];
 	Vertices[1] = vertices[1];
 	Vertices[2] = vertices[2];
+
 }
 
 Triangle

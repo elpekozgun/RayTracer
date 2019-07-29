@@ -19,7 +19,7 @@ using namespace std;
 template<typename T>
 inline void DeleteItemAndEraseFromVector(vector<T*>& Entities, T* entity)
 {
-	std::vector<T*>::iterator itr = std::find(Entities.begin(), Entities.end(), entity);
+	typename std::vector<T*>::iterator itr = std::find(Entities.begin(), Entities.end(), entity);
 	delete entity;
 	Entities.erase(itr);
 }
@@ -27,7 +27,7 @@ inline void DeleteItemAndEraseFromVector(vector<T*>& Entities, T* entity)
 template<typename T>
 inline void EraseFromVector(vector<T*>& Entities, T* entity)
 {
-	std::vector<T*>::iterator itr = std::find(Entities.begin(), Entities.end(), entity);
+	typename std::vector<T*>::iterator itr = std::find(Entities.begin(), Entities.end(), entity);
 	Entities.erase(itr);
 }
 
@@ -38,7 +38,6 @@ int main(int argc, char** argv)
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
 
-#pragma region Scene Genearation
 
 	auto start = chrono::high_resolution_clock::now();
 
@@ -55,7 +54,7 @@ int main(int argc, char** argv)
 
 	if(argc < 2)
 	{
-		output = Parser::Parse("res/input3.txt");
+		output = Parser::Parse("res/input4.txt");
 		fileName = "input3.ppm";
 	}
 	else
@@ -131,10 +130,10 @@ int main(int argc, char** argv)
 		}
 	}
 
+	//Image 
 	Image.resize((int)camera.ScreenResolution.y, std::vector<Vector3>((int)camera.ScreenResolution.x));
 	
-
-
+	// Geometric Entities
 	for(unsigned int i = 0; i < output.size(); i++)
 	{
 		auto list = output.at(i);
@@ -151,21 +150,17 @@ int main(int argc, char** argv)
 	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
 	std::cout << "\nScene generated in: " << seconds.count() << "seconds" << endl;
 
-#pragma endregion
 
-#pragma region Rendering
-
+	//Render
 	auto renderer = Renderer(camera, scene, GeometricEntities, materials);
 	renderer.Render(Image);
 
-#pragma endregion
 
-
+	// Outfile
 	Parser::GeneratePPMfileBinary(fileName,(int)camera.ScreenResolution.x, (int)camera.ScreenResolution.y, Image);
 
 
-#pragma region Dispose
-
+	// Dispose
 	delete vertexList;
 	for( IGeometricEntity* entity : GeometricEntities )
 	{
@@ -174,7 +169,6 @@ int main(int argc, char** argv)
 
 	return 0;	
 
-#pragma endregion
 
 };
 
