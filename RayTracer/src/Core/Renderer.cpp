@@ -1,5 +1,4 @@
 #include "Renderer.h"
-#include <cmath>
 
 Renderer::Renderer( Camera& camera, Scene& scene, std::vector<IGeometricEntity*> entities, std::vector<Material> materials)
 {
