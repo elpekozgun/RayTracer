@@ -45,7 +45,7 @@ int main(int argc, char** argv)
 	
 	vector<vector<Vector3>> Image;
 	vector<Material> materials;
-	VertexList vertexList;
+	VertexList* vertexList = NULL;	// Stack may not be enough.
 	Camera camera;
 	Scene scene;
 	string fileName;
@@ -115,8 +115,8 @@ int main(int argc, char** argv)
 		}
 		else if(entity->GetType() == eEntityType::vertexlist)
 		{
-			vertexList = *dynamic_cast<VertexList*>(entity);
-			DeleteItemAndEraseFromVector(Entities, entity);
+			vertexList = dynamic_cast<VertexList*>(entity);
+			EraseFromVector(Entities, entity);
 		}
 		else if(entity->GetType() == eEntityType::camera)
 		{
@@ -161,6 +161,7 @@ int main(int argc, char** argv)
 
 #pragma region Dispose
 
+	delete vertexList;
 	for( IGeometricEntity* entity : GeometricEntities )
 	{
 		delete entity;

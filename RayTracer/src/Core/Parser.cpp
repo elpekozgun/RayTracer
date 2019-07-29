@@ -90,7 +90,7 @@ IEntity* Parser::GenerateEntity(std::vector<std::string> list)
 	return NULL;
 }
 
-IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list, VertexList& vertexList)
+IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list, VertexList* vertexList)
 {
 	std::string heading = list[0];
 
@@ -99,9 +99,9 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 		Vector3 vertices = ToVector3(list[3]);
 		Vector3 triangleVertices[3]
 		{
-			vertexList.vertexList.at((int)vertices.X),
-			vertexList.vertexList.at((int)vertices.Y),
-			vertexList.vertexList.at((int)vertices.Z)
+			vertexList->vertexList.at((int)vertices.X),
+			vertexList->vertexList.at((int)vertices.Y),
+			vertexList->vertexList.at((int)vertices.Z)
 		};
 
 		Triangle* triangle = new Triangle
@@ -119,7 +119,7 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 		(
 			ToInt(list[1]),
 			ToInt(list[2]),
-			vertexList.vertexList.at(ToInt(list[3])),
+			vertexList->vertexList.at(ToInt(list[3])),
 			ToFloat(list[4])
 		);
 
@@ -133,9 +133,9 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 			Vector3 vertices = ToVector3(list[i]);
 			Vector3 triangleVertices[3] =
 			{
-				vertexList.vertexList.at((int)vertices.X),
-				vertexList.vertexList.at((int)vertices.Y),
-				vertexList.vertexList.at((int)vertices.Z),
+				vertexList->vertexList.at((int)vertices.X),
+				vertexList->vertexList.at((int)vertices.Y),
+				vertexList->vertexList.at((int)vertices.Z),
 			};
 			Triangle* triangle = new Triangle
 			(
