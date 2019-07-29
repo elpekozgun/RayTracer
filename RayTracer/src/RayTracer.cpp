@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 
 	if(argc < 2)
 	{
-		output = Parser::Parse("res/input5.txt");
+		output = Parser::Parse("res/input3.txt");
 		fileName = "input3.ppm";
 	}
 	else

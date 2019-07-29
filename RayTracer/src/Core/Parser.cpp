@@ -241,7 +241,7 @@ std::vector<std::vector<std::string>> Parser::Parse(std::string path)
 			returnList.push_back(list);
 		}
 	}
-	
+	inputStream.close();
 
 	return returnList;
 }
@@ -318,6 +318,7 @@ float Parser::SciToFloat(std::string line)
 	ss >> f;
 	if( ss.fail() )
 	{
+		ss.clear();
 		return 0;
 	} 
 	return(f);
