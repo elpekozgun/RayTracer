@@ -14,5 +14,4 @@ VertexList::VertexList()
 
 VertexList::~VertexList()
 {
-	std::cout << "Vertex list deleted" << std::endl;
 }

@@ -53,7 +53,7 @@ int main(int argc, char** argv)
 
 	if(argc < 2)
 	{
-		output = Parser::Parse("res/input3.txt");
+		output = Parser::Parse("res/input5.txt");
 		fileName = "input3.ppm";
 	}
 	else
@@ -154,9 +154,10 @@ int main(int argc, char** argv)
 
 	auto finish = chrono::high_resolution_clock::now();
 	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
-	std::cout << "time elapsed: " << seconds.count() << "seconds" << endl;
+	std::cout << "\nRender Finished in: " << seconds.count() << "seconds" << endl;
 
-	Parser::GeneratePPMfile(fileName,(int)camera.ScreenResolution.x, (int)camera.ScreenResolution.y, Image);
+	//Parser::GeneratePPMfileRaw(fileName, (int)camera.ScreenResolution.x, (int)camera.ScreenResolution.y, Image);
+	Parser::GeneratePPMfileBinary(fileName,(int)camera.ScreenResolution.x, (int)camera.ScreenResolution.y, Image);
 
 
 #pragma region Dispose
@@ -167,8 +168,7 @@ int main(int argc, char** argv)
 		delete entity;
 	}
 
-	return 0;
-	
+	return 0;	
 
 #pragma endregion
 

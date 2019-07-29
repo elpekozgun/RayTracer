@@ -161,9 +161,8 @@ IGeometricEntity* Parser::GenerateGeometricEntity(std::vector<std::string> list,
 	return NULL;
 }
 
-void Parser::GeneratePPMfile(std::string fileName, unsigned int width, unsigned int height, std::vector<std::vector<Vector3>> colorData)
+void Parser::GeneratePPMfileRaw(std::string fileName, unsigned int width, unsigned int height, std::vector<std::vector<Vector3>> colorData)
 {
-	//std::ofstream outfile("test.ppm");
 	std::ofstream outfile(fileName);
 
 	auto start = std::chrono::high_resolution_clock::now();
@@ -184,9 +183,39 @@ void Parser::GeneratePPMfile(std::string fileName, unsigned int width, unsigned 
 		outfile << std::endl;
 	}
 
+	outfile.close();
+
 	auto finish = std::chrono::high_resolution_clock::now();
 	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
-	std::cout << "time elapsed: " << seconds.count() << "seconds" << std::endl;
+	std::cout << "\nPPM generated in: " << seconds.count() << "seconds" << std::endl;
+
+}
+
+void Parser::GeneratePPMfileBinary(std::string fileName, unsigned int width, unsigned int height, std::vector<std::vector<Vector3>> colorData)
+{
+	std::ofstream outfile(fileName, std::ios::out | std::ios::binary);
+
+	auto start = std::chrono::high_resolution_clock::now();
+
+	// P3 for plain, P6 for binary format.
+	outfile << "P6\n" << width << " " << height << "\n255\n";
+
+	for(unsigned int j = 0; j < height; j++)
+	{
+		for(unsigned int i = 0; i < width; i++)
+		{
+			auto value = colorData.at(j).at(i);
+			outfile << (unsigned char) std::min(float(255), value.X) << 
+					   (unsigned char) std::min(float(255), value.Y) <<
+					   (unsigned char) std::min(float(255), value.Z);
+		}
+	}
+
+	outfile.close();
+
+	auto finish = std::chrono::high_resolution_clock::now();
+	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
+	std::cout << " \nPPM generated in: " << seconds.count() << "seconds" << std::endl;
 
 }
 
