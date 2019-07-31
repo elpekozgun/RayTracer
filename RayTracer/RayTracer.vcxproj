@@ -172,6 +172,8 @@
     <Text Include="res\input4.txt" />
     <Text Include="res\input5.txt" />
     <Text Include="res\input6.txt" />
+    <Text Include="res\input7.txt" />
+    <Text Include="res\input8.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />
