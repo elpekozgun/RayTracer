@@ -54,7 +54,7 @@ int main(int argc, char** argv)
 
 	if(argc < 2)
 	{
-		output = Parser::Parse("res/input8.txt");
+		output = Parser::Parse("res/input4.txt");
 		fileName = "input3.ppm";
 	}
 	else
@@ -153,8 +153,8 @@ int main(int argc, char** argv)
 
 	//Render
 	auto renderer = Renderer(camera, scene, GeometricEntities, materials);
-	renderer.Render(Image);
-
+	//renderer.Render(Image);
+	renderer.RenderDistributed(Image);
 
 	// Outfile
 	Parser::GeneratePPMfileBinary(fileName,(int)camera.ScreenResolution.x, (int)camera.ScreenResolution.y, Image);

@@ -30,7 +30,7 @@ public:
 	float NearDistance;
 	Vector2 ScreenResolution;
 
-	Vector3 GetScreenPixel(int i, int j);
+	Vector3 GetScreenPixel(float i, float j);
 
 
 	Camera();

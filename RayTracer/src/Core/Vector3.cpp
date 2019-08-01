@@ -19,6 +19,23 @@ Vector3 Vector3::Zero()
 	return Vector3(0.0f, 0.0f, 0.0f);
 }
 
+Vector3 Vector3::Random()
+{
+	float x = (float)rand() / (RAND_MAX);
+	float y = (float)rand() / (RAND_MAX);
+	float z = (float)rand() / (RAND_MAX);
+
+	return Vector3(x, y, z);
+}
+
+Vector3 Vector3::Jitter(int part, int total)
+{
+	auto cos = cosf((float)part * (2.0f * PI) / (float)total);
+	auto sin = sinf((float)part * (2.0f * PI) / (float)total);
+	
+	return Vector3( 0.75f * cos, 0.75f * sin, 0);
+}
+
 float Vector3::DotProduct(Vector3 other)
 {
 	return this->X * other.X + this->Y * other.Y + this->Z * other.Z;

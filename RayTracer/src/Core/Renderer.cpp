@@ -2,10 +2,10 @@
 
 Renderer::Renderer( Camera& camera, Scene& scene, std::vector<IGeometricEntity*> entities, std::vector<Material> materials)
 {
-_Camera = camera;
-_Scene = scene;
-_Entities = entities;
-_Materials = materials;
+	_Camera = camera;
+	_Scene = scene;
+	_Entities = entities;
+	_Materials = materials;
 }
 
 Renderer::~Renderer()
@@ -36,6 +36,48 @@ void Renderer::Render(std::vector<std::vector<Vector3>>& image)
 	auto finish = std::chrono::high_resolution_clock::now();
 	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
 	std::cout << "\nRendering finished in: " << seconds.count() << "seconds" << std::endl;
+
+}
+
+void Renderer::RenderDistributed(std::vector<std::vector<Vector3>>& image)
+{
+	auto start = std::chrono::high_resolution_clock::now();
+
+	int samples = 16;
+	float sampleInvers = 1 / (float)samples;
+
+
+#if !_DEBUG
+#ifdef _OPENMP
+#pragma omp parallel for
+#endif
+#endif // !DEBUG
+
+	for (unsigned int j = 0; j < (unsigned int)_Camera.ScreenResolution.y; j++)
+	{
+		for (unsigned int i = 0; i < (unsigned int)_Camera.ScreenResolution.x; i++)
+		{
+			for (unsigned int k = 0; k < samples; k++)
+			{
+				Vector3 r = Vector3::Jitter(k, samples);
+				//Vector3 r = Vector3::Random();
+				float jitterX = i + r.X;
+				float jitterY = j + r.Y;
+				Ray ray(_Camera.Position, _Camera.GetScreenPixel(jitterX, jitterY));
+				image.at(j).at(i) += Trace
+				(
+					ray,
+					0,
+					true
+				) * sampleInvers;
+			}
+		}
+	}
+
+	auto finish = std::chrono::high_resolution_clock::now();
+	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
+	std::cout << "\nRendering finished in: " << seconds.count() << "seconds" << std::endl;
+
 
 }
 

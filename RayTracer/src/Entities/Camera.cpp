@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-Vector3 Camera::GetScreenPixel(int i, int j)
+Vector3 Camera::GetScreenPixel(float i, float j)
 {
 	Vector3 m = Position + Gaze * NearDistance;
 	Vector3 u = Up.CrossProduct(-Gaze);

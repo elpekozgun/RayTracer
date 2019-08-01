@@ -2,6 +2,7 @@
 #define VECTOR_3_H
 #include <cmath>
 
+constexpr auto PI = 3.1415926535897f;
 
 class Vector3
 {
@@ -15,7 +16,8 @@ public:
 	Vector3();
 
 	static Vector3 Zero();
-
+	static Vector3 Random();
+	static Vector3 Jitter(int part, int total);
 
 	float DotProduct(Vector3 other);
 	float DotProductNormalized(Vector3 other);
