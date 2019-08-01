@@ -32,8 +32,7 @@ Vector3 Vector3::Jitter(int part, int total)
 {
 	auto cos = cosf((float)part * (2.0f * PI) / (float)total);
 	auto sin = sinf((float)part * (2.0f * PI) / (float)total);
-	
-	return Vector3( 0.75f * cos, 0.75f * sin, 0);
+	return Vector3( 0.5f * cos, 0.5f * sin, 0);
 }
 
 float Vector3::DotProduct(Vector3 other)
