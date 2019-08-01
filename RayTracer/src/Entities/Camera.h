@@ -4,6 +4,7 @@
 #include "../Core/Vector3.h"
 #include "..//Entities/IEntity.h"
 
+
 struct Vector2
 {
 	float x;
@@ -26,19 +27,20 @@ public:
 	Vector3 Position;
 	Vector3 Gaze;
 	Vector3 Up;
+	Vector3 U;
 	Vector4 NearPlane;
 	float NearDistance;
+	float Aperture;
 	Vector2 ScreenResolution;
-
+	
 	Vector3 GetScreenPixel(float i, float j);
 
 
 	Camera();
-	Camera(Vector3 position, Vector3 gaze, Vector3 up, Vector4 nearPlane, float nearDistance, Vector2 screenResolution);
+	Camera(Vector3 position, Vector3 gaze, Vector3 up, Vector4 nearPlane, float nearDistance, Vector2 screenResolution,float aperture);
 	~Camera();
 
 private:
-
 
 	// Inherited via IEntity
 	virtual eEntityType GetType() override;

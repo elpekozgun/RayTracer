@@ -16,9 +16,11 @@ void Renderer::Render(std::vector<std::vector<Vector3>>& image)
 {
 	auto start = std::chrono::high_resolution_clock::now();
 
+#if !_DEBUG
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
+#endif 
 	for(unsigned int j = 0; j < (unsigned int)_Camera.ScreenResolution.y; j++)
 	{
 		for(unsigned int i = 0; i < (unsigned int)_Camera.ScreenResolution.x; i++)
@@ -39,37 +41,43 @@ void Renderer::Render(std::vector<std::vector<Vector3>>& image)
 
 }
 
-void Renderer::RenderDistributed(std::vector<std::vector<Vector3>>& image)
+void Renderer::RenderDistributed(std::vector<std::vector<Vector3>>& image, Vector3 focusPoint)
 {
 	auto start = std::chrono::high_resolution_clock::now();
 
 	int samples = 16;
-	float sampleInvers = 1 / (float)samples;
-
+	float focalDistance = _Camera.Position.DistanceTo(focusPoint);
 
 #if !_DEBUG
 #ifdef _OPENMP
 #pragma omp parallel for
 #endif
-#endif // !DEBUG
+#endif 
 
 	for (unsigned int j = 0; j < (unsigned int)_Camera.ScreenResolution.y; j++)
 	{
 		for (unsigned int i = 0; i < (unsigned int)_Camera.ScreenResolution.x; i++)
 		{
+			auto aim = _Camera.Position + _Camera.GetScreenPixel(i, j) * focalDistance;
+			
 			for (unsigned int k = 0; k < samples; k++)
 			{
-				Vector3 r = Vector3::Jitter(k, samples);
-				//Vector3 r = Vector3::Random();
-				float jitterX = i + r.X;
-				float jitterY = j + r.Y;
-				Ray ray(_Camera.Position, _Camera.GetScreenPixel(jitterX, jitterY));
+				//Vector3 r = Vector3::Jitter(k, samples);
+				Vector3 r = Vector3::Random();
+				
+				Vector3 focalPos = _Camera.Position - (_Camera.U  + _Camera.Up) * (_Camera.Aperture / 2) + (_Camera.U * r.X + _Camera.Up * r.Y) * _Camera.Aperture;
+				Vector3 focalDir = aim - focalPos;
+				Ray ray(focalPos, focalDir);
+
+				//float jitterX = i + r.X;
+				//float jitterY = j + r.Y;
+				//Ray ray(_Camera.Position, _Camera.GetScreenPixel(jitterX, jitterY));
 				image.at(j).at(i) += Trace
 				(
 					ray,
 					0,
 					true
-				) * sampleInvers;
+				) / samples;
 			}
 		}
 	}

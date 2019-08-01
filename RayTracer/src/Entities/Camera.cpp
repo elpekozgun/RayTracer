@@ -20,16 +20,20 @@ Camera::Camera()
 	this->Position = Vector3();
 	this->Gaze = Vector3();
 	this->Up = Vector3();
+	this->Up = Vector3();
+	this->Aperture = 1.0f;
 	this->NearPlane = Vector4();
 	this->NearDistance = 0.0f;
 	this->ScreenResolution = Vector2();
 }
 
-Camera::Camera(Vector3 position, Vector3 gaze, Vector3 up, Vector4 nearPlane, float nearDistance, Vector2 screenResolution)
+Camera::Camera(Vector3 position, Vector3 gaze, Vector3 up, Vector4 nearPlane, float nearDistance, Vector2 screenResolution, float aperture)
 {
 	this->Position = position;
 	this->Gaze = gaze;
 	this->Up = up;
+	this->U = this->Up.CrossProduct(this->Gaze);
+	this->Aperture = aperture;
 	this->NearPlane = nearPlane;
 	this->NearDistance = nearDistance;
 	this->ScreenResolution = screenResolution;

@@ -46,6 +46,10 @@ IEntity* Parser::GenerateEntity(std::vector<std::string> list)
 		camera->NearPlane = ToVector4(list[4]);
 		camera->NearDistance = ToFloat(list[5]);
 		camera->ScreenResolution = ToVector2(list[6]);
+		if (list.size() > 7)
+		{
+			camera->Aperture = ToFloat(list[7]);
+		}
 
 		return camera;
 	}

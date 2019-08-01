@@ -132,6 +132,7 @@
     <ClCompile Include="src\Core\Ray.cpp" />
     <ClCompile Include="src\Core\Renderer.cpp" />
     <ClCompile Include="src\Core\Vector3.cpp" />
+    <ClCompile Include="src\Entities\AreaLight.cpp" />
     <ClCompile Include="src\Entities\Camera.cpp" />
     <ClCompile Include="src\Entities\IEntity.cpp" />
     <ClCompile Include="src\Entities\Material.cpp" />
@@ -152,6 +153,7 @@
     <ClInclude Include="src\Core\Ray.h" />
     <ClInclude Include="src\Core\Renderer.h" />
     <ClInclude Include="src\Core\Vector3.h" />
+    <ClInclude Include="src\Entities\AreaLight.h" />
     <ClInclude Include="src\Entities\Camera.h" />
     <ClInclude Include="src\Entities\IEntity.h" />
     <ClInclude Include="src\Entities\Material.h" />
