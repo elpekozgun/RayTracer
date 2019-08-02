@@ -53,8 +53,6 @@ private:
 	static float ToFloat(std::string line);
 	static int ToInt(std::string line);
 	static float SciToFloat(std::string line);
-	static std::vector<std::vector<std::string>> ParseTxt(std::string path);
-
 
 };
 
