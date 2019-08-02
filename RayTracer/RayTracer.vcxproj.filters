@@ -139,4 +139,7 @@
     <Text Include="res\input7.txt" />
     <Text Include="res\input8.txt" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="src\Raytracer.cu" />
+  </ItemGroup>
 </Project>
