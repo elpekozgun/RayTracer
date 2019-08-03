@@ -45,7 +45,7 @@ void Renderer::RenderDistributed(std::vector<std::vector<Vector3>>& image, Vecto
 {
 	auto start = std::chrono::high_resolution_clock::now();
 
-	int samples = 16;
+	int samples = 8;
 	float focalDistance = _Camera.Position.DistanceTo(focusPoint);
 
 #if !_DEBUG
@@ -62,16 +62,16 @@ void Renderer::RenderDistributed(std::vector<std::vector<Vector3>>& image, Vecto
 			
 			for (unsigned int k = 0; k < samples; k++)
 			{
-				//Vector3 r = Vector3::Jitter(k, samples);
-				Vector3 r = Vector3::Random();
+				Vector3 r = Vector3::Jitter(k, samples);
+				//Vector3 r = Vector3::Random();
 				
-				Vector3 focalPos = _Camera.Position - (_Camera.U  + _Camera.Up) * (_Camera.Aperture / 2) + (_Camera.U * r.X + _Camera.Up * r.Y) * _Camera.Aperture;
-				Vector3 focalDir = aim - focalPos;
-				Ray ray(focalPos, focalDir);
+				//Vector3 focalPos = _Camera.Position - (_Camera.U  + _Camera.Up) * (_Camera.Aperture / 2) + (_Camera.U * r.X + _Camera.Up * r.Y) * _Camera.Aperture;
+				//Vector3 focalDir = aim - focalPos;
+				//Ray ray(focalPos, focalDir);
 
-				//float jitterX = i + r.X;
-				//float jitterY = j + r.Y;
-				//Ray ray(_Camera.Position, _Camera.GetScreenPixel(jitterX, jitterY));
+				float jitterX = i + r.X;
+				float jitterY = j + r.Y;
+				Ray ray(_Camera.Position, _Camera.GetScreenPixel(jitterX, jitterY));
 				image.at(j).at(i) += Trace
 				(
 					ray,

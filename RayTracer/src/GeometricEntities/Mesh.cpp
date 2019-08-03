@@ -66,22 +66,35 @@ std::pair<float, IGeometricEntity*> Mesh::Intersect(Ray ray)
 	Triangle* tri = NULL;
 	float tMin = INFINITY;
 
+	if (this->Left == NULL && this->Right == NULL)
+	{
+		float t = 0;
+		for (auto& triangle : this->Triangles)
+		{
+			t = triangle->Intersect(ray).first;
+			if (t > 0 && t <= tMin)
+			{
+				tMin = t;
+				tri = triangle;
+			}
+		}
+		if (tMin == INFINITY)
+		{
+			tMin = 0;
+		}
+		return std::pair<float, IGeometricEntity*>(tMin, tri);
+	}
+
 	if(this->Boundingbox.isPointInside(ray.origin) == false && this->Boundingbox.Intersect(ray).first > 0 ||
 	   this->Boundingbox.isPointInside(ray.origin) == true && this->Left != NULL && this->Right != NULL)
 	{
+
 		auto leftOutput = this->Left->Intersect(ray);
 		auto rightOutput = this->Right->Intersect(ray);
 
 		if(leftOutput.first > 0 && rightOutput.first > 0)
 		{
-			if(leftOutput.first < rightOutput.first)
-			{
-				return leftOutput;
-			}
-			else
-			{
-				return rightOutput;
-			}
+			return leftOutput.first < rightOutput.first ? leftOutput : rightOutput;
 		}
 		else if(leftOutput.first > 0)
 		{
@@ -91,25 +104,6 @@ std::pair<float, IGeometricEntity*> Mesh::Intersect(Ray ray)
 		{
 			return rightOutput;
 		}
-	}
-
-	if(this->Left == NULL && this->Right == NULL)
-	{
-		float t = 0;
-		for(auto& triangle : this->Triangles)
-		{
-			t = triangle->Intersect(ray).first;
-			if(t > 0 && t <= tMin)
-			{
-				tMin = t;
-				tri = triangle;
-			}
-		}
-		if(tMin == INFINITY)
-		{
-			tMin = 0;
-		}
-		return std::pair<float, IGeometricEntity*>(tMin, tri);
 	}
 
 	return std::pair<float, IGeometricEntity*>(0, NULL);

@@ -29,17 +29,20 @@ bool Box::isPointInside(Vector3 point)
 
 std::pair<float, IGeometricEntity*> Box::Intersect(Ray ray)
 {
-	
-	float tMin = (bounds[0].X - ray.origin.X) / ray.direction.Normalized().X;
-	float tMax = (bounds[1].X - ray.origin.X) / ray.direction.Normalized().X;
+	float inverseX = 1 / (ray.direction.X);
+	float inverseY = 1 / (ray.direction.Y);
+	float inverseZ = 1 / (ray.direction.Z);
+
+	float tMin = (bounds[0].X - ray.origin.X) * inverseX;
+	float tMax = (bounds[1].X - ray.origin.X) * inverseX;
 
 	if(tMin > tMax)
 	{
 		std::swap(tMin, tMax);
 	}
 
-	float tYMin = (bounds[0].Y - ray.origin.Y) / ray.direction.Normalized().Y;
-	float tYMax = (bounds[1].Y - ray.origin.Y) / ray.direction.Normalized().Y;
+	float tYMin = (bounds[0].Y - ray.origin.Y) * inverseY;
+	float tYMax = (bounds[1].Y - ray.origin.Y) * inverseY;
 
 	if(tYMin > tYMax)
 	{
@@ -61,8 +64,8 @@ std::pair<float, IGeometricEntity*> Box::Intersect(Ray ray)
 		tMax = tYMax;
 	}
 
-	float tZMin = (bounds[0].Z - ray.origin.Z) / ray.direction.Normalized().Z;
-	float tZMax = (bounds[1].Z - ray.origin.Z) / ray.direction.Normalized().Z;
+	float tZMin = (bounds[0].Z - ray.origin.Z) * inverseZ;
+	float tZMax = (bounds[1].Z - ray.origin.Z) * inverseZ;
 
 	if(tZMin > tZMax)
 	{
