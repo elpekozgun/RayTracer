@@ -61,17 +61,16 @@ Mesh::~Mesh()
 	}
 }
 
-std::pair<float, IGeometricEntity*> Mesh::Intersect(Ray ray)
+IGeometricEntity* Mesh::Intersect(Ray ray, float& t)
 {
 	Triangle* tri = NULL;
 	float tMin = INFINITY;
 
 	if (this->Left == NULL && this->Right == NULL)
 	{
-		float t = 0;
 		for (auto& triangle : this->Triangles)
 		{
-			t = triangle->Intersect(ray).first;
+			triangle->Intersect(ray, t);
 			if (t > 0 && t <= tMin)
 			{
 				tMin = t;
@@ -80,33 +79,57 @@ std::pair<float, IGeometricEntity*> Mesh::Intersect(Ray ray)
 		}
 		if (tMin == INFINITY)
 		{
-			tMin = 0;
+			tMin =  0 ;
 		}
-		return std::pair<float, IGeometricEntity*>(tMin, tri);
+
+		t = tMin;
+		return tri;
 	}
 
-	if(this->Boundingbox.isPointInside(ray.origin) == false && this->Boundingbox.Intersect(ray).first > 0 ||
-	   this->Boundingbox.isPointInside(ray.origin) == true && this->Left != NULL && this->Right != NULL)
+	float tCalc = 0.0f;
+	this->Boundingbox.Intersect(ray, tCalc);
+	if (this->Boundingbox.isPointInside(ray.origin) == false && tCalc > 0 ||
+		this->Boundingbox.isPointInside(ray.origin) == true && this->Left != NULL && this->Right != NULL)
 	{
+		float tLeft = 0;
+		float tRight = 0;
 
-		auto leftOutput = this->Left->Intersect(ray);
-		auto rightOutput = this->Right->Intersect(ray);
+		auto leftOutput = this->Left->Intersect(ray, tLeft);
+		if (tLeft > 0)
+		{
+			auto rightOutput = this->Right->Intersect(ray, tRight);
+			if (tRight > 0)
+			{
+				if (tRight < tLeft)
+				{
+					t = tRight;
+					return rightOutput;
+				}
+				else
+				{
+					t = tLeft;
+					return leftOutput;
+				}
+			}
+			else
+			{
+				t = tLeft;
+				return leftOutput;
+			}
+		}
+		else
+		{
+			auto rightOutput = this->Right->Intersect(ray, tRight);
+			if (tRight > 0)
+			{
+				t = tRight;
+				return rightOutput;
+			}
+		}
 
-		if(leftOutput.first > 0 && rightOutput.first > 0)
-		{
-			return leftOutput.first < rightOutput.first ? leftOutput : rightOutput;
-		}
-		else if(leftOutput.first > 0)
-		{
-			return leftOutput;
-		}
-		else if(rightOutput.first > 0)
-		{
-			return rightOutput;
-		}
 	}
-
-	return std::pair<float, IGeometricEntity*>(0, NULL);
+	t = 0;
+	return NULL;
 }
 
 Vector3 Mesh::GetNormal(Vector3 point)

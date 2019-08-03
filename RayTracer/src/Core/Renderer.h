@@ -23,8 +23,8 @@ public:
 	Renderer(Camera& camera, Scene& scene, std::vector<IGeometricEntity*> entities, std::vector<Material> materials);
 	~Renderer();
 
-	void Render(std::vector<std::vector<Vector3>>& image);
-	void RenderDistributed(std::vector<std::vector<Vector3>>& image, Vector3 focusPoint);
+	void Render(Vector3* image);
+	void RenderDistributed(Vector3* image, Vector3 focusPoint);
 
 private:
 	

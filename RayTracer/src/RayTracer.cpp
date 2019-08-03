@@ -44,7 +44,6 @@ int main(int argc, char** argv)
 	vector<IEntity*> Entities;
 	vector<IGeometricEntity*> GeometricEntities;
 	
-	vector<vector<Vector3>> Image;
 	vector<Material> materials;
 	VertexList* vertexList = NULL;	// Stack may not be enough.
 	Camera camera;
@@ -131,8 +130,8 @@ int main(int argc, char** argv)
 	}
 
 	//Image 
-	Image.resize((int)camera.ScreenResolution.y, std::vector<Vector3>((int)camera.ScreenResolution.x));
-	
+	Vector3* Image = new Vector3[(int)camera.ScreenResolution.y * (int)camera.ScreenResolution.x];
+
 	// Geometric Entities
 	for(unsigned int i = 0; i < output.size(); i++)
 	{
@@ -153,9 +152,9 @@ int main(int argc, char** argv)
 
 	//Render
 	auto renderer = Renderer(camera, scene, GeometricEntities, materials);
-	//renderer.Render(Image);
-	renderer.RenderDistributed(Image,Vector3(0, 1, 0.01));
-
+	renderer.Render(Image);
+	//renderer.RenderDistributed(Image,Vector3(0, 1, 0.01));
+	
 	// Outfile
 	Parser::GeneratePPMfileBinary(fileName,(int)camera.ScreenResolution.x, (int)camera.ScreenResolution.y, Image);
 
@@ -166,6 +165,7 @@ int main(int argc, char** argv)
 	{
 		delete entity;
 	}
+	delete[] Image;
 
 	return 0;	
 

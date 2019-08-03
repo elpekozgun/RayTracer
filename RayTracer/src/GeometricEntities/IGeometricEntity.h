@@ -9,7 +9,7 @@ class IGeometricEntity
 {
 
 public:
-	virtual std::pair<float,IGeometricEntity*> Intersect(Ray ray) = 0;
+	virtual IGeometricEntity* Intersect(Ray ray, float& t) = 0;
 	virtual Vector3 GetNormal(Vector3 point) = 0;
 	virtual int ID() = 0;
 	virtual int MaterialID() = 0;

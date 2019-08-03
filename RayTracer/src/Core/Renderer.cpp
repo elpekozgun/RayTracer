@@ -12,13 +12,13 @@ Renderer::~Renderer()
 {
 }
 
-void Renderer::Render(std::vector<std::vector<Vector3>>& image)
+void Renderer::Render(Vector3* image)
 {
 	auto start = std::chrono::high_resolution_clock::now();
 
 #if !_DEBUG
 #ifdef _OPENMP
-#pragma omp parallel for
+#pragma omp parallel for num_threads(8)
 #endif
 #endif 
 	for(unsigned int j = 0; j < (unsigned int)_Camera.ScreenResolution.y; j++)
@@ -26,7 +26,7 @@ void Renderer::Render(std::vector<std::vector<Vector3>>& image)
 		for(unsigned int i = 0; i < (unsigned int)_Camera.ScreenResolution.x; i++)
 		{
 			Ray ray(_Camera.Position, _Camera.GetScreenPixel(i, j));
-			image.at(j).at(i) = Trace
+			image[j * (int)_Camera.ScreenResolution.y + i] = Trace
 			(
 				ray,
 				0,
@@ -41,7 +41,7 @@ void Renderer::Render(std::vector<std::vector<Vector3>>& image)
 
 }
 
-void Renderer::RenderDistributed(std::vector<std::vector<Vector3>>& image, Vector3 focusPoint)
+void Renderer::RenderDistributed(Vector3* image, Vector3 focusPoint)
 {
 	auto start = std::chrono::high_resolution_clock::now();
 
@@ -50,7 +50,7 @@ void Renderer::RenderDistributed(std::vector<std::vector<Vector3>>& image, Vecto
 
 #if !_DEBUG
 #ifdef _OPENMP
-#pragma omp parallel for
+#pragma omp parallel for num_threads(8)
 #endif
 #endif 
 
@@ -72,7 +72,7 @@ void Renderer::RenderDistributed(std::vector<std::vector<Vector3>>& image, Vecto
 				float jitterX = i + r.X;
 				float jitterY = j + r.Y;
 				Ray ray(_Camera.Position, _Camera.GetScreenPixel(jitterX, jitterY));
-				image.at(j).at(i) += Trace
+				image[j * (int)_Camera.ScreenResolution.y + i] += Trace
 				(
 					ray,
 					0,
@@ -100,8 +100,7 @@ Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 	float t = 0;
 	for(auto& entity : _Entities)
 	{
-		auto temp = entity->Intersect(ray);
-		t = temp.first;
+		auto temp = entity->Intersect(ray, t);
 		if(t > 0 && t <= tMin)
 		{
 			int matId = entity->MaterialID();
@@ -110,7 +109,7 @@ Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 				mat = *std::find_if(_Materials.begin(), _Materials.end(), [matId](Material& y) -> bool { return y.ID == matId; })._Ptr;
 			}
 			tMin = t;
-			hitEntity = temp.second;
+			hitEntity = temp;
 		}
 	}
 
@@ -174,11 +173,12 @@ Vector3 Renderer::GetColor(const IGeometricEntity* hitEntity, Vector3& hitPoint,
 
 		Ray shadowRay(hitPoint + lightDir * _Scene.ShadowRayEpsilon, lightDir);
 
-		// Shadows
+		//Shadows
+		float t = 0;
 		for(auto& entity : _Entities)
 		{
-			auto retVal = entity->Intersect(shadowRay);
-			if(retVal.first > 0 && retVal.second != hitEntity)
+			auto retVal = entity->Intersect(shadowRay, t);
+			if( t > 0 && retVal != hitEntity)
 			{
 				diff = Vector3();
 				spec = Vector3();

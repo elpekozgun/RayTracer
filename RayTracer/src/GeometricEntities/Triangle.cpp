@@ -41,7 +41,7 @@ Vector3 Triangle::GetNormal(Vector3 point)
 	return (Vertices[1] - Vertices[0]).CrossProduct(Vertices[2] - Vertices[0]).Normalized();
 }
 
-std::pair<float, IGeometricEntity*> Triangle::Intersect(Ray ray)
+IGeometricEntity* Triangle::Intersect(Ray ray, float& t)
 {
 	auto a = Vertices[0];
 	auto b = Vertices[1];
@@ -66,7 +66,8 @@ std::pair<float, IGeometricEntity*> Triangle::Intersect(Ray ray)
 	float beta = BetaMat.Determinant() / detA;
 	if(beta < -0.0000001f || beta > 0.99999999f)
 	{
-		return std::pair<float, IGeometricEntity*>(0, NULL);;
+		t = 0;
+		return NULL;
 	}
 
 	auto gammaMat = Matrix3
@@ -78,7 +79,8 @@ std::pair<float, IGeometricEntity*> Triangle::Intersect(Ray ray)
 	float gamma = gammaMat.Determinant() / detA;
 	if(gamma < -0.0000001f || gamma > 0.99999999f)
 	{
-		return std::pair<float, IGeometricEntity*>(0, NULL);;
+		t = 0;
+		return NULL;
 	}
 
 	auto tMat = Matrix3
@@ -87,14 +89,16 @@ std::pair<float, IGeometricEntity*> Triangle::Intersect(Ray ray)
 		Vector3(a.Y - b.Y, a.Y - c.Y, a.Y - o.Y),
 		Vector3(a.Z - b.Z, a.Z - c.Z, a.Z - o.Z)
 	);
-	float t = tMat.Determinant() / detA;
+	float tCalc = tMat.Determinant() / detA;
 
 	if(beta + gamma < 1)
 	{
-		return std::pair<float, IGeometricEntity*>(t,this);
+		t = tCalc;
+		return this;
 	}
 
-	return std::pair<float, IGeometricEntity*>(0, NULL);;
+	t = 0;
+	return NULL;
 }
 
 eEntityType Triangle::GetType()

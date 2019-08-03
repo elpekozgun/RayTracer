@@ -14,6 +14,7 @@ public:
 
 	Vector3(float x, float y, float z);
 	Vector3();
+	~Vector3();
 
 	static Vector3 Zero();
 	static Vector3 Random();
@@ -37,7 +38,6 @@ public:
 	inline Vector3& operator += (const Vector3& v) { this->X += v.X, this->Y += v.Y, this->Z += v.Z; return *this; }
 	inline Vector3& operator *= (const Vector3& v) { this->X *= v.X, this->Y *= v.Y, this->Z *= v.Z; return *this; }
 	inline Vector3 operator -() const {return Vector3(-this->X, -this->Y, -this->Z);}
-	~Vector3();
 };
 
 #endif 

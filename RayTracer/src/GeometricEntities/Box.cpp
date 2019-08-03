@@ -27,7 +27,7 @@ bool Box::isPointInside(Vector3 point)
 
 }
 
-std::pair<float, IGeometricEntity*> Box::Intersect(Ray ray)
+IGeometricEntity* Box::Intersect(Ray ray, float& t)
 {
 	float inverseX = 1 / (ray.direction.X);
 	float inverseY = 1 / (ray.direction.Y);
@@ -51,7 +51,8 @@ std::pair<float, IGeometricEntity*> Box::Intersect(Ray ray)
 
 	if(tMin > tYMax || tYMin > tMax)
 	{
-		return std::pair<float, IGeometricEntity*>(0,NULL);
+		t = 0;
+		return NULL;
 	}
 
 	if(tYMin > tMin)
@@ -74,7 +75,8 @@ std::pair<float, IGeometricEntity*> Box::Intersect(Ray ray)
 
 	if(tMin > tZMax || tZMin > tMax)
 	{
-		return std::pair<float, IGeometricEntity*>(0, NULL);
+		t = 0;
+		return NULL;
 	}
 
 	if(tZMin > tMin)
@@ -92,7 +94,8 @@ std::pair<float, IGeometricEntity*> Box::Intersect(Ray ray)
 		std::swap(tMin, tMax);
 	}
 
-	return std::pair<float, IGeometricEntity*>(tMin, this);
+	t = tMin;
+	return this;
 }
 
 Vector3 Box::GetNormal(Vector3 point)

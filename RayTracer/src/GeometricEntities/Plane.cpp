@@ -11,9 +11,10 @@ Plane::~Plane()
 {
 }
 
-std::pair<float, IGeometricEntity*> Plane::Intersect(Ray ray)
+IGeometricEntity* Plane::Intersect(Ray ray, float& t)
 {
-	return std::pair<float,IGeometricEntity*>((SurfacePoint - ray.origin).DotProduct(Normal) / (ray.direction.DotProduct(Normal)),this);
+	t = (SurfacePoint - ray.origin).DotProduct(Normal) / (ray.direction.DotProduct(Normal));
+	return this;
 }
 
 Vector3 Plane::GetNormal(Vector3 Point)

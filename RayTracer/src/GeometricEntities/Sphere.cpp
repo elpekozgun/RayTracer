@@ -26,7 +26,7 @@ Vector3 Sphere::GetNormal(Vector3 point)
 	return (point - Center).Normalized();
 }
 
-std::pair<float, IGeometricEntity*> Sphere::Intersect(Ray ray)
+IGeometricEntity* Sphere::Intersect(Ray ray, float& t)
 {
 	float dd = ray.direction.DotProduct(ray.direction);
 	Vector3	 o_c = ray.origin - Center;
@@ -34,20 +34,21 @@ std::pair<float, IGeometricEntity*> Sphere::Intersect(Ray ray)
 
 	if(do_c > 0)
 	{
-		return std::pair<float, IGeometricEntity*>(0, NULL);;
+		t = 0;
+		return NULL;
 	}
 	float t1 = (-do_c + sqrt(powf(do_c, 2.0f) - dd * (o_c.DotProduct(o_c) - Radius * Radius))) / dd;
 	float t2 = (-do_c - sqrt(powf(do_c, 2.0f) - dd * (o_c.DotProduct(o_c) - Radius * Radius))) / dd;
 
 	if(t1 <= t2)
 	{
-		return std::pair<float, IGeometricEntity*>(t1, this);;
+		t = t1;
 	}
 	else
 	{
-		return std::pair<float, IGeometricEntity*>(t2, this);;
+		t = t2;
 	}
-
+	return this;
 }
 
 eEntityType Sphere::GetType()

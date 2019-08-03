@@ -195,7 +195,7 @@ void Parser::GeneratePPMfileRaw(std::string fileName, unsigned int width, unsign
 
 }
 
-void Parser::GeneratePPMfileBinary(std::string fileName, unsigned int width, unsigned int height, std::vector<std::vector<Vector3>> colorData)
+void Parser::GeneratePPMfileBinary(std::string fileName, unsigned int width, unsigned int height, Vector3* imageData)
 {
 	std::ofstream outfile(fileName, std::ios::out | std::ios::binary);
 
@@ -204,15 +204,11 @@ void Parser::GeneratePPMfileBinary(std::string fileName, unsigned int width, uns
 	// P3 for plain, P6 for binary format.
 	outfile << "P6\n" << width << " " << height << "\n255\n";
 
-	for(unsigned int j = 0; j < height; j++)
+	for(unsigned int i = 0; i < height * width; i++)
 	{
-		for(unsigned int i = 0; i < width; i++)
-		{
-			auto value = colorData.at(j).at(i);
-			outfile << (unsigned char) std::min(float(255), value.X) << 
-					   (unsigned char) std::min(float(255), value.Y) <<
-					   (unsigned char) std::min(float(255), value.Z);
-		}
+		outfile << (unsigned char) std::min(float(255), imageData[i].X) << 
+				   (unsigned char) std::min(float(255), imageData[i].Y) <<
+				   (unsigned char) std::min(float(255), imageData[i].Z);
 	}
 
 	outfile.close();
