@@ -9,8 +9,9 @@ public:
 
 	Vector3 origin;
 	Vector3 direction;
+	bool IsShadowRay;
 
-	Ray(Vector3 origin, Vector3 direction);
+	Ray(Vector3 origin, Vector3 direction,bool isShadowRay);
 	~Ray();
 
 };

@@ -25,7 +25,7 @@ void Renderer::Render(Vector3* image)
 	{
 		for(unsigned int i = 0; i < (unsigned int)_Camera.ScreenResolution.x; i++)
 		{
-			Ray ray(_Camera.Position, _Camera.GetScreenPixel(i, j));
+			Ray ray(_Camera.Position, _Camera.GetScreenPixel((float)i, (float)j), false);
 			image[j * (int)_Camera.ScreenResolution.y + i] = Trace
 			(
 				ray,
@@ -34,6 +34,7 @@ void Renderer::Render(Vector3* image)
 			);
 		}
 	}
+
 
 	auto finish = std::chrono::high_resolution_clock::now();
 	auto seconds = std::chrono::duration_cast<std::chrono::microseconds>(finish - start) / 1e6;
@@ -45,7 +46,7 @@ void Renderer::RenderDistributed(Vector3* image, Vector3 focusPoint)
 {
 	auto start = std::chrono::high_resolution_clock::now();
 
-	int samples = 8;
+	unsigned int samples = 16;
 	float focalDistance = _Camera.Position.DistanceTo(focusPoint);
 
 #if !_DEBUG
@@ -58,26 +59,26 @@ void Renderer::RenderDistributed(Vector3* image, Vector3 focusPoint)
 	{
 		for (unsigned int i = 0; i < (unsigned int)_Camera.ScreenResolution.x; i++)
 		{
-			auto aim = _Camera.Position + _Camera.GetScreenPixel(i, j) * focalDistance;
+			auto aim = _Camera.Position + _Camera.GetScreenPixel((float)i, (float)j).Normalized() * focalDistance;
 			
 			for (unsigned int k = 0; k < samples; k++)
 			{
-				Vector3 r = Vector3::Jitter(k, samples);
-				//Vector3 r = Vector3::Random();
+				//Vector3 r = Vector3::Jitter(k, samples);
+				Vector3 r = Vector3::Random();
 				
-				//Vector3 focalPos = _Camera.Position - (_Camera.U  + _Camera.Up) * (_Camera.Aperture / 2) + (_Camera.U * r.X + _Camera.Up * r.Y) * _Camera.Aperture;
-				//Vector3 focalDir = aim - focalPos;
-				//Ray ray(focalPos, focalDir);
+				Vector3 focalPos = _Camera.Position /*- (_Camera.U  + _Camera.Up) * (_Camera.Aperture / 2) */+ (_Camera.U * r.X + _Camera.Up * r.Y) * _Camera.Aperture;
+				Vector3 focalDir = aim - _Camera.Position;
+				Ray ray(focalPos, focalDir, false);
 
-				float jitterX = i + r.X;
+				/*float jitterX = i + r.X;
 				float jitterY = j + r.Y;
-				Ray ray(_Camera.Position, _Camera.GetScreenPixel(jitterX, jitterY));
+				Ray ray(_Camera.Position, _Camera.GetScreenPixel(jitterX, jitterY),false);*/
 				image[j * (int)_Camera.ScreenResolution.y + i] += Trace
 				(
 					ray,
 					0,
 					true
-				) / samples;
+				) / (float)samples;
 			}
 		}
 	}
@@ -126,7 +127,7 @@ Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 		if(currentRecursion < _Scene.RecursionDepth && mat.MirrorReflectance != Vector3::Zero())
 		{			
 			Vector3 reflectDir = Reflect(-ray.direction.Normalized(), normal);
-			Ray reflectRay(hitPoint + reflectDir * _Scene.ShadowRayEpsilon, reflectDir);
+			Ray reflectRay(hitPoint + reflectDir * _Scene.ShadowRayEpsilon, reflectDir,false);
 			reflectionColor = Trace(reflectRay, ++currentRecursion, false) * mat.MirrorReflectance;
 
 			float kr = Fresnel(ray.direction.Normalized(), normal, mat.Refraction);
@@ -136,7 +137,7 @@ Vector3 Renderer::Trace(Ray& ray, int currentRecursion, bool includeAmbient)
 			{
 				Vector3 refractionDirection = Refract(ray.direction.Normalized(), normal, mat.Refraction);
 				Vector3 refractionOrigin = outside ? hitPoint - normal * _Scene.ShadowRayEpsilon : hitPoint + normal * _Scene.ShadowRayEpsilon;
-				Ray refractionRay = Ray(refractionOrigin, refractionDirection.Normalized());
+				Ray refractionRay = Ray(refractionOrigin, refractionDirection.Normalized(),false);
 				refractionColor = Trace(refractionRay, currentRecursion, false);
 			}
 
@@ -171,14 +172,14 @@ Vector3 Renderer::GetColor(const IGeometricEntity* hitEntity, Vector3& hitPoint,
 		Vector3	spec = light.Intensity * powf(normal.DotProductNormalized(halfway), mat.PhongExponent) / (distance * distance);
 		Vector3	diff = light.Intensity * lambertian / (distance * distance);
 
-		Ray shadowRay(hitPoint + lightDir * _Scene.ShadowRayEpsilon, lightDir);
+		Ray shadowRay(hitPoint + lightDir * _Scene.ShadowRayEpsilon, lightDir, true);
 
 		//Shadows
 		float t = 0;
 		for(auto& entity : _Entities)
 		{
 			auto retVal = entity->Intersect(shadowRay, t);
-			if( t > 0 && retVal != hitEntity)
+			if( t > 0 && retVal != NULL)
 			{
 				diff = Vector3();
 				spec = Vector3();

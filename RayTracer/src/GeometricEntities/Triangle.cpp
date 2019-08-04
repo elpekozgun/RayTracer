@@ -56,14 +56,15 @@ IGeometricEntity* Triangle::Intersect(Ray ray, float& t)
 		Vector3(a.Z - b.Z, a.Z - c.Z, d.Z)
 	);
 	float detA = A.Determinant();
-	
+	float detAinv = 1 / detA;
+
 	auto BetaMat = Matrix3
 	(
 		Vector3(a.X - o.X, a.X - c.X, d.X),
 		Vector3(a.Y - o.Y, a.Y - c.Y, d.Y),
 		Vector3(a.Z - o.Z, a.Z - c.Z, d.Z)
 	);
-	float beta = BetaMat.Determinant() / detA;
+	float beta = BetaMat.Determinant() * detAinv;
 	if(beta < -0.0000001f || beta > 0.99999999f)
 	{
 		t = 0;
@@ -76,7 +77,7 @@ IGeometricEntity* Triangle::Intersect(Ray ray, float& t)
 		Vector3(a.Y - b.Y, a.Y - o.Y, d.Y),
 		Vector3(a.Z - b.Z, a.Z - o.Z, d.Z)
 	);
-	float gamma = gammaMat.Determinant() / detA;
+	float gamma = gammaMat.Determinant() * detAinv;
 	if(gamma < -0.0000001f || gamma > 0.99999999f)
 	{
 		t = 0;
@@ -89,7 +90,7 @@ IGeometricEntity* Triangle::Intersect(Ray ray, float& t)
 		Vector3(a.Y - b.Y, a.Y - c.Y, a.Y - o.Y),
 		Vector3(a.Z - b.Z, a.Z - c.Z, a.Z - o.Z)
 	);
-	float tCalc = tMat.Determinant() / detA;
+	float tCalc = tMat.Determinant() * detAinv;
 
 	if(beta + gamma < 1)
 	{

@@ -2,6 +2,7 @@
 #define BOX_H
 
 #include "IGeometricEntity.h"
+#include "Sphere.h"
 
 class Box : public IGeometricEntity
 {
