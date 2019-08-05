@@ -1,6 +1,6 @@
 # RayTracer
 
-Cpu based Ray tracer with KD-Tree.
+##Cpu based Ray tracer with KD-Tree.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/elpekozgun/RayTracer/master/RayTracer/samples/1.PNG" alt="drawing" width="512"/>
