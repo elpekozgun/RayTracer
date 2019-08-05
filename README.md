@@ -1,3 +1,3 @@
 # RayTracer
 Software Based Distributed Ray Tracing Application
-![alt text](http://url/to/img.png)
+![alt text](https://raw.githubusercontent.com/elpekozgun/RayTracer/master/RayTracer/samples/1.PNG)
