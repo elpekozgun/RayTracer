@@ -63,16 +63,17 @@ void Renderer::RenderDistributed(Vector3* image, Vector3 focusPoint)
 			
 			for (unsigned int k = 0; k < samples; k++)
 			{
-				//Vector3 r = Vector3::Jitter(k, samples);
-				Vector3 r = Vector3::Random();
+				Vector3 r = Vector3::Jitter(k, samples);
+				//Vector3 r = Vector3::Random();
 				
-				Vector3 focalPos = _Camera.Position /*- (_Camera.U  + _Camera.Up) * (_Camera.Aperture / 2) */+ (_Camera.U * r.X + _Camera.Up * r.Y) * _Camera.Aperture;
-				Vector3 focalDir = aim - _Camera.Position;
-				Ray ray(focalPos, focalDir, false);
+				// TODO: Arrange below segment for proper depth of field effect.
+				//Vector3 focalPos = _Camera.Position /*- (_Camera.U  + _Camera.Up) * (_Camera.Aperture / 2) */+ (_Camera.U * r.X + _Camera.Up * r.Y) * _Camera.Aperture;
+				//Vector3 focalDir = aim - _Camera.Position;
+				//Ray ray(focalPos, focalDir, false);
 
-				/*float jitterX = i + r.X;
+				float jitterX = i + r.X;
 				float jitterY = j + r.Y;
-				Ray ray(_Camera.Position, _Camera.GetScreenPixel(jitterX, jitterY),false);*/
+				Ray ray(_Camera.Position, _Camera.GetScreenPixel(jitterX, jitterY),false);
 				image[j * (int)_Camera.ScreenResolution.y + i] += Trace
 				(
 					ray,
